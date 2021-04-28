@@ -1,7 +1,7 @@
-require("dotenv").config();
+require("dotenv").config({ path: ".env" });
+import { ShardingManager } from "discord.js";
 
-const { ShardingManager } = require("discord.js");
-const manager = new ShardingManager("./bot.js", {
+const manager = new ShardingManager("./dist/bot.js", {
     totalShards: "auto",
     token: process.env.CLIENT_TOKEN
 });
