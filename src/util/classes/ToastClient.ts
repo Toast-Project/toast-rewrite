@@ -1,30 +1,38 @@
 import { Client, Collection } from "discord.js";
+import RandomString from "jvar/utility/randomString";
 import config from "../../config";
 import { readdirSync } from "fs";
 import { join } from "@fireflysemantics/join";
 import { resolve } from "path";
 import Event from "./Event";
 import Command from "./Command";
+import Database from "../database/functions";
 
 const commandsDirectory = resolve(__dirname, "..", "..", "commands");
 const eventsDirectory = resolve(__dirname, "..", "..", "events");
 
 export default class ToastClient extends Client {
-    commands: Collection<any, any>;
-    config: any;
-
     constructor(options?: any) {
         super(options || {});
 
+        this.randomString = RandomString;
         this.commands = new Collection();
         this.config = config;
-    }
 
+        this.clean = text => {
+            if (typeof (text) === "string") {
+                return text.replace(/`/g, "`" + String.fromCharCode(8203)).replace(/@/g, "@" + String.fromCharCode(8203));
+            } else {
+                return text;
+            }
+        };
+    }
 
     async connect() {
         await super.login(process.env.CLIENT_TOKEN);
         await this._loadEvents();
         await this._loadCommands();
+        await this._loadDB();
         return this;
     }
 
@@ -68,5 +76,9 @@ export default class ToastClient extends Client {
         }
 
         return this;
+    }
+
+    private async _loadDB() {
+        await Database(this);
     }
 }

@@ -11,9 +11,12 @@
   "license": "ISC",
   "dependencies": {
     "@fireflysemantics/join": "^1.0.3",
+    "@types/mongodb": "^3.6.12",
     "@types/node": "^14.14.41",
     "discord.js": "^12.5.3",
     "dotenv": "^8.2.0",
+    "jvar": "^1.5.1",
+    "mongodb": "^3.6.6",
     "typescript-require": "^0.3.0"
   },
   "devDependencies": {

@@ -1,4 +1,4 @@
-import { Client, Collection, Message } from "discord.js";
+import {Client, Collection, Message} from "discord.js";
 
 interface Help {
     name: string,
@@ -12,18 +12,19 @@ interface Conf {
     cooldown?: number,
     aliases?: Array<string>,
     allowDMs?: boolean,
-    args?: Object
+    args?: Object,
+    saveResponse?: boolean
 }
 
 type CommandOptions = Help & Conf;
 
-export default class Command {
+export default abstract class Command {
     public conf: Conf;
     public help: Help;
     public cooldown: Collection<any, any>;
     public message: Message;
 
-    constructor(public client: Client, options: CommandOptions) {
+    protected constructor(public client: Client, options: CommandOptions) {
         this.client = client;
 
         this.help = {
@@ -37,7 +38,8 @@ export default class Command {
             cooldown: options.cooldown || 0,
             aliases: options.aliases || null,
             allowDMs: options.allowDMs || false,
-            args: options.args || null
+            args: options.args || null,
+            saveResponse: options.saveResponse || false
         };
 
         this.cooldown = new Collection();
@@ -60,7 +62,9 @@ export default class Command {
         this.message = message;
     }
 
-    async send(message) {
-        await this.message.channel.send(message);
+    async send(message: any) {
+        this.message.response = await this.message.channel.send(message);
     }
+
+    public abstract run(...args: readonly unknown[]): unknown;
 }

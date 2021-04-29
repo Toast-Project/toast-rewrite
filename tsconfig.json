@@ -28,7 +28,8 @@
     "target": "esnext",
     "types": [
       "node",
-      "discord.js"
+      "discord.js",
+      "mongodb"
     ]
   },
   "include": [
