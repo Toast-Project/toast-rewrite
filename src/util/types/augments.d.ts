@@ -29,6 +29,18 @@ declare module "discord.js" {
         command?: Command;
         response?: Message;
     }
+
+    interface User {
+        data?: any;
+    }
+
+    interface GuildMember {
+        data?: any;
+    }
+
+    interface Guild {
+        data?: any;
+    }
 }
 
 declare module "mongodb" {

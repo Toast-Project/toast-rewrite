@@ -9,15 +9,14 @@ export default class extends Command {
             name: "ping",
             description: "Pings the bot.",
             usage: ["!ping"],
-            aliases: ["pong", "latency"],
-            args: { thing: { required: true, type: "integer" } }
+            aliases: ["pong", "latency"]
         })
     }
 
     public async run(client: ToastClient, message: Message) {
         const m: Message = await this.message.channel.send(`${client.config.emotes.typing.full}`);
 
-        const embed = await Embed(null, {
+        const embed = await Embed({
             title: "Ping",
             description: `Pong! The connection latency is **${m.createdTimestamp - message.createdTimestamp}ms**.\nThe API latency is **${client.ws.ping}ms**.`
         });

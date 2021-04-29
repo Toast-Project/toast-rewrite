@@ -11,7 +11,11 @@ export default class extends Event {
     public async run(message: Message) {
         if (message.author.bot) return;
 
-        const prefixes = ["t.", `<@${this.client.user.id}>`, `<@!${this.client.user.id}>`];
+        message.guild.data = await this.client.db.guilds.get(message.guild.id) || {};
+        message.author.data = await this.client.db.users.get(message.author.id) || {};
+        message.member.data = await this.client.db.members.get(message.guild.id, message.author.id) || {};
+
+        const prefixes = ["dad, ", `<@${this.client.user.id}>`, `<@!${this.client.user.id}>`];
         let prefix = "";
         for (const p of prefixes) {
             if (message.content.startsWith(p)) {

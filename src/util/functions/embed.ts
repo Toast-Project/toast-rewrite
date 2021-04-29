@@ -1,4 +1,4 @@
-import { ColorResolvable, Message, MessageEmbed, TextChannel, User } from "discord.js";
+import { ColorResolvable, MessageEmbed } from "discord.js";
 
 interface EmbedConf {
     title?: string,
@@ -13,7 +13,7 @@ interface EmbedConf {
 
 type EmbedOptions = EmbedConf;
 
-export default function embed(obj: any, data: EmbedOptions) {
+export default function embed(data: EmbedOptions) {
     const embed = new MessageEmbed();
 
     data.title ? embed.setTitle(data.title) : null;
@@ -30,11 +30,5 @@ export default function embed(obj: any, data: EmbedOptions) {
         }
     }
 
-    if (obj instanceof TextChannel || obj instanceof User) {
-        return obj.send(embed);
-    }
-    if (obj instanceof Message) {
-        return obj.edit(embed);
-    }
     return embed;
 }

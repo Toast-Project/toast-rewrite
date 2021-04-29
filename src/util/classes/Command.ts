@@ -1,20 +1,22 @@
 import { Client, Collection, Message } from "discord.js";
 
 interface Help {
-    name: string,
-    description: string,
-    usage: Array<string>,
-    category?: string
+    name: string;
+    description: string;
+    usage: Array<string>;
+    category?: string;
 }
 
 interface Conf {
-    permLevel?: number,
-    cooldown?: number,
-    aliases?: Array<string>,
-    allowDMs?: boolean,
-    args?: Object,
-    saveResponse?: boolean,
-    separator?: string
+    permLevel?: number;
+    cooldown?: number;
+    aliases?: Array<string>;
+    allowDMs?: boolean;
+    args?: Object;
+    saveResponse?: boolean;
+    separator?: string;
+    hidden?: boolean;
+    locked?: boolean;
 }
 
 type CommandOptions = Help & Conf;
@@ -41,7 +43,9 @@ export default abstract class Command {
             allowDMs: options.allowDMs || false,
             args: options.args || null,
             saveResponse: options.saveResponse || false,
-            separator: options.separator || " "
+            separator: options.separator || " ",
+            hidden: options.hidden || false,
+            locked: options.locked || false
         };
 
         this.cooldown = new Collection();

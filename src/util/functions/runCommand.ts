@@ -18,10 +18,12 @@ export default async function runCommand(client: ToastClient, message: Message, 
     message.command = command;
 
     if (!response) await command.run(client, message, validatedArgs);
-    else embed(message.channel, {
-        title: "Incorrect Usage",
-        author: [message.author.tag, message.author.displayAvatarURL()],
-        color: "RED",
-        description: `${response} Run \`t.help ${command.help.name}\` to view usage information.`
-    });
+    else await message.channel.send(
+        embed({
+            title: "Incorrect Usage",
+            author: [message.author.tag, message.author.displayAvatarURL()],
+            color: "RED",
+            description: `${response} Run \`t.help ${command.help.name}\` to view usage information.`
+        })
+    );
 };

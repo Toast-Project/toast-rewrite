@@ -1,7 +1,7 @@
 import ToastClient from "../classes/ToastClient";
 import { init } from "./mongo";
 import ClientDao from "./dao/ClientDao";
-import GuildDao from "./dao/ClientDao";
+import GuildDao from "./dao/GuildDao";
 import WarningDao from "./dao/WarningDao";
 import GuildShopDao from "./dao/GuildShopDao";
 import MemberDao from "./dao/MemberDao";
