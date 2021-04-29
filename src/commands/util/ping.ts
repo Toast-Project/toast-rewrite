@@ -1,7 +1,7 @@
-import Command from "../util/classes/Command";
-import ToastClient from "../util/classes/ToastClient";
+import Command from "../../util/classes/Command";
+import ToastClient from "../../util/classes/ToastClient";
 import { Message } from "discord.js";
-import Embed from "../util/functions/embed";
+import Embed from "../../util/functions/embed";
 
 export default class extends Command {
     public constructor(client: ToastClient) {
@@ -9,7 +9,8 @@ export default class extends Command {
             name: "ping",
             description: "Pings the bot.",
             usage: ["!ping"],
-            aliases: ["pong", "latency"]
+            aliases: ["pong", "latency"],
+            args: { thing: { required: true, type: "integer" } }
         })
     }
 

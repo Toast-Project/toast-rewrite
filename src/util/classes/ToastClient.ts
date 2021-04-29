@@ -1,7 +1,7 @@
 import { Client, Collection } from "discord.js";
 import RandomString from "jvar/utility/randomString";
 import config from "../../config";
-import { readdirSync } from "fs";
+import { lstatSync, readdirSync } from "fs";
 import { join } from "@fireflysemantics/join";
 import { resolve } from "path";
 import Event from "./Event";
@@ -30,43 +30,49 @@ export default class ToastClient extends Client {
 
     async connect() {
         await super.login(process.env.CLIENT_TOKEN);
-        await this._loadEvents();
-        await this._loadCommands();
+        await this._loadEvents(eventsDirectory);
+        await this._loadCommands(commandsDirectory);
         await this._loadDB();
+        await console.log(`[COMMANDS]: ${this.commands.size} command(s) loaded`)
+
         return this;
     }
 
-    private async _loadCommands() {
-        let count = 0;
-
-        for (const filename of readdirSync(commandsDirectory, "utf8")) {
-            if (filename.endsWith(".js") || filename.endsWith(".ts")) {
-                const commandClass = require(join(commandsDirectory, filename))["default"];
+    private async _loadCommands(directory) {
+        for (const filename of readdirSync(directory, "utf8")) {
+            if (
+                !filename.endsWith(".js") &&
+                !filename.endsWith(".ts") &&
+                lstatSync(join(directory, filename)).isDirectory()
+            )
+                await this._loadCommands(join(directory, filename));
+            else if (filename.endsWith(".js") || filename.endsWith(".ts")) {
+                const commandClass = require(join(directory, filename))["default"];
                 const command: Command = new commandClass(this);
 
-                const split = join(commandsDirectory, filename).split(/[\/\\]/g);
+                const split = join(directory, filename).split(/[\/\\]/g);
                 command.setCategory(split[split.length - 2]);
 
                 if (this.commands.has(command.help.name)) {
                     throw new Error("Duplicate command name " + command.help.name);
                 }
 
-                count ++;
                 this.commands.set(command.help.name, command);
             }
         }
 
-        console.log(`[COMMANDS]: ${count} command(s) loaded`)
         return this;
     }
 
-    private async _loadEvents() {
-        for (const filename of readdirSync(eventsDirectory, "utf8")) {
-            if (filename.endsWith(".js") || filename.endsWith(".ts")) {
-                const eventClass = require(join(eventsDirectory, filename))["default"];
-                const event: Event = new eventClass(this);
+    private async _loadEvents(directory) {
+        let count: number = 0;
 
-                console.log(`[EVENTS]: "${event.conf.name}" loaded`)
+        for (const filename of readdirSync(directory, "utf8")) {
+            if (filename.endsWith(".js") || filename.endsWith(".ts")) {
+                const eventClass = require(join(directory, filename))["default"];
+                const event: Event = new eventClass(this);
+                count ++;
+
                 if (event.conf.once) {
                     this.once(event.conf.name, (...args) => event.run(...args));
                 } else {
@@ -75,6 +81,7 @@ export default class ToastClient extends Client {
             }
         }
 
+        console.log(`[EVENTS]: ${count} event(s) loaded`)
         return this;
     }
 

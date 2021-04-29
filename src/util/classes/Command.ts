@@ -1,4 +1,4 @@
-import {Client, Collection, Message} from "discord.js";
+import { Client, Collection, Message } from "discord.js";
 
 interface Help {
     name: string,
@@ -13,7 +13,8 @@ interface Conf {
     aliases?: Array<string>,
     allowDMs?: boolean,
     args?: Object,
-    saveResponse?: boolean
+    saveResponse?: boolean,
+    separator?: string
 }
 
 type CommandOptions = Help & Conf;
@@ -39,7 +40,8 @@ export default abstract class Command {
             aliases: options.aliases || null,
             allowDMs: options.allowDMs || false,
             args: options.args || null,
-            saveResponse: options.saveResponse || false
+            saveResponse: options.saveResponse || false,
+            separator: options.separator || " "
         };
 
         this.cooldown = new Collection();
