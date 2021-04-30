@@ -1,6 +1,7 @@
 import ToastClient from "../util/classes/ToastClient";
 import Event from "../util/classes/Event";
 import { Message } from "discord.js";
+import log from "../util/functions/log";
 
 export default class extends Event {
     public constructor(client: ToastClient) {
@@ -9,5 +10,12 @@ export default class extends Event {
 
     public async run(message: Message) {
         if (message.command && !message.command?.conf.saveResponse && message.response) await message.response.delete();
+
+        await log(this.client, message.guild, {
+            type: "messageDelete",
+            user: message.author,
+            channel: message.channel,
+            message
+        });
     }
 };
