@@ -11,7 +11,7 @@ export default class extends Command {
             usage: ["!help [command]", "!help ping", "!help"],
             aliases: ["h"],
             args: { command: { type: "command" } }
-        })
+        });
     }
 
     public async run(client: ToastClient, message: Message, [command]) {

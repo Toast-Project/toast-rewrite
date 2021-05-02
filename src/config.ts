@@ -1,7 +1,7 @@
 const config = {
     primaryGuild: "809244060303753216",
     logChannel: "811391969267548160",
-    developers: ["609167831950557348", "272659147974115328"],
+    developers: ["f"],
 
     permissionLevels: [
         "None",

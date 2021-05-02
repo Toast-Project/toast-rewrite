@@ -10,7 +10,7 @@ export default class extends Command {
             description: "Pings the bot.",
             usage: ["!ping"],
             aliases: ["pong", "latency"]
-        })
+        });
     }
 
     public async run(client: ToastClient, message: Message) {
