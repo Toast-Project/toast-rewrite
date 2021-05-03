@@ -8,7 +8,7 @@ interface Help {
 }
 
 interface Conf {
-    permLevel?: number;
+    permissionLevel?: number;
     cooldown?: number;
     aliases?: Array<string>;
     allowDMs?: boolean;
@@ -37,7 +37,7 @@ export default abstract class Command {
         };
 
         this.conf = {
-            permLevel: options.permLevel || 0,
+            permissionLevel: options.permissionLevel || 0,
             cooldown: options.cooldown || 0,
             aliases: options.aliases || null,
             allowDMs: options.allowDMs || false,
