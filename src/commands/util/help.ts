@@ -31,7 +31,8 @@ export default class extends Command {
         }
 
         const embed: MessageEmbed = Embed({
-            title: "Help"
+            title: "Help",
+            description: "You can find more commands by typing '/' in the message box. All commands can be found that way."
         });
 
         const commands = client.commands.filter(c => !c.conf.hidden);

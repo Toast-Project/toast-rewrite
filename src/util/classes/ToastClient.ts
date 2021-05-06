@@ -7,6 +7,7 @@ import { resolve } from "path";
 import Event from "./Event";
 import Command from "./Command";
 import Database from "../database/functions";
+import Slash from "../slash";
 
 const commandsDirectory = resolve(__dirname, "..", "..", "commands");
 const eventsDirectory = resolve(__dirname, "..", "..", "events");
@@ -33,6 +34,7 @@ export default class ToastClient extends Client {
         await this._loadEvents(eventsDirectory);
         await this._loadCommands(commandsDirectory);
         await this._loadDB();
+        await Slash(this);
         await console.log(`[COMMANDS]: ${this.commands.size} command(s) loaded`)
 
         return this;
