@@ -1,5 +1,6 @@
 import RandomString from "jvar/utility/randomString";
 import Command from "../classes/Command";
+import SlashCommand from "../classes/SlashCommand";
 
 interface CommandHelp {
     name: string,
@@ -19,6 +20,7 @@ interface CommandConf {
 declare module "discord.js" {
     interface Client {
         commands: Collection<string, Command>;
+        slashCommands: Collection<string, SlashCommand>;
         config: Record<string, any>;
         randomString: RandomString;
         clean: any;

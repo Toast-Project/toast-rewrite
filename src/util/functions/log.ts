@@ -7,8 +7,9 @@ export default async function (client: ToastClient, guild: Guild, data: any) {
     if (!channel) return;
 
     const log = buildEmbed(data.type, data);
-    return await channel.send(log)
-        .catch(null);
+    try {
+        return await channel.send(log)
+    } finally {}
 }
 
 async function getLogChannel(guild) {

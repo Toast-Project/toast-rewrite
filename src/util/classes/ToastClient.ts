@@ -1,15 +1,19 @@
 import { Client, Collection } from "discord.js";
 import RandomString from "jvar/utility/randomString";
 import config from "../../config";
-import { lstatSync, readdirSync } from "fs";
+import { existsSync, lstatSync, readdirSync } from "fs";
 import { join } from "@fireflysemantics/join";
 import { resolve } from "path";
 import Event from "./Event";
 import Command from "./Command";
 import Database from "../database/functions";
-import Slash from "../slash";
+import SlashCommand from "./SlashCommand";
+import fetch from "node-fetch";
+import checkSlashPermissions from "../functions/checkSlashPermissions";
+import Embed from "../functions/embed";
 
 const commandsDirectory = resolve(__dirname, "..", "..", "commands");
+const slashCommandsDirectory = resolve(__dirname, "..", "..", "slashCommands");
 const eventsDirectory = resolve(__dirname, "..", "..", "events");
 
 export default class ToastClient extends Client {
@@ -18,6 +22,7 @@ export default class ToastClient extends Client {
 
         this.randomString = RandomString;
         this.commands = new Collection();
+        this.slashCommands = new Collection();
         this.config = config;
 
         this.clean = text => {
@@ -33,8 +38,8 @@ export default class ToastClient extends Client {
         await super.login(process.env.CLIENT_TOKEN);
         await this._loadEvents(eventsDirectory);
         await this._loadCommands(commandsDirectory);
+        await this._loadSlashCommands(slashCommandsDirectory);
         await this._loadDB();
-        await Slash(this);
         await console.log(`[COMMANDS]: ${this.commands.size} command(s) loaded`)
 
         return this;
@@ -85,6 +90,84 @@ export default class ToastClient extends Client {
 
         console.log(`[EVENTS]: ${count} event(s) loaded`)
         return this;
+    }
+
+    private async _loadSlashCommands(directory) {
+        for (const filename of readdirSync(directory, "utf8")) {
+            if (filename.endsWith(".js") || filename.endsWith(".ts")) {
+                const commandClass = require(join(directory, filename))["default"];
+                const command: SlashCommand = new commandClass(this);
+                command.conf.path = join(directory, filename);
+
+                const body = {
+                    name: command.help.name,
+                    description: command.help.description
+                }
+
+                fetch(`https://discord.com/api/applications/${this.user.id}/commands`, {
+                    method: "post",
+                    body: JSON.stringify(body),
+                    headers: {
+                        Authorization: "Bot " + this.token,
+                        "Content-Type": "application/json"
+                    },
+                })
+                    .then(res => res.json());
+
+                this.slashCommands.set(command.help.name, command);
+            }
+        }
+
+        // @ts-ignore
+        this.ws.on("INTERACTION_CREATE", async interaction => {
+            const path = resolve(__dirname, "..", "..", `slashCommands/${interaction.data.name}.js`);
+            if (!existsSync(path)) return this["api"]["interactions"](interaction.id)(interaction.token).callback.post({
+                data: {
+                    type: 4,
+                    data: {
+                        content: "This command has been disabled."
+                    }
+                }
+            });
+
+            const commandClass = require(path)["default"];
+            const command: SlashCommand = new commandClass(this);
+
+            const response = await checkSlashPermissions(this, interaction, command);
+
+            const noEmbed = Embed({
+                title: "Missing Permissions",
+                color: "RED",
+                description: `The minimum permission level required to run this command is: \`${response}\``
+            });
+            const needEmbed = Embed({
+                title: "Toast Required",
+                color: "RED",
+                description: `Toast must be in this server in order to use slash commands.`
+            });
+
+            if (response === 401) return this["api"]["interactions"](interaction.id)(interaction.token).callback.post({
+                data: {
+                    type: 4,
+                    data: {
+                        embeds: [needEmbed]
+                    }
+                }
+            });
+
+            if (response) {
+                return this["api"]["interactions"](interaction.id)(interaction.token).callback.post({
+                    data: {
+                        type: 4,
+                        data: {
+                            embeds: [noEmbed]
+                        }
+                    }
+                });
+            }
+
+            return command.run(this, interaction);
+        });
     }
 
     private async _loadDB() {
