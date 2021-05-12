@@ -9,6 +9,7 @@ import MuteDao from "./dao/MuteDao";
 import SuggestionDao from "./dao/SuggestionDao";
 import TagDao from "./dao/TagDao";
 import UserDao from "./dao/UserDao";
+import ReminderDao from "./dao/ReminderDao";
 
 interface Dao {
     clientStorage?: any;
@@ -20,6 +21,7 @@ interface Dao {
     suggestions?: any;
     tags?: any;
     users?: any;
+    reminders?: any;
 }
 
 type DBoptions = Dao;
@@ -35,6 +37,7 @@ export default async (client: ToastClient) => {
     db.warnings = new WarningDao(db);
     db.suggestions = new SuggestionDao(db);
     db.tags = new TagDao(db);
+    db.reminders = new ReminderDao(db);
     db.clientStorage = new ClientDao(db);
     client.db = db;
 }

@@ -11,6 +11,7 @@ interface Conf {
     cooldown?: number;
     path?: any;
     hidden?: boolean;
+    options?: any;
 }
 
 type CommandOptions = Help & Conf;
@@ -33,7 +34,8 @@ export default abstract class SlashCommand {
             permissionLevel: options.permissionLevel || 0,
             cooldown: options.cooldown || 0,
             path: options.path || null,
-            hidden: options.hidden || false
+            hidden: options.hidden || false,
+            options: options.options || null
         };
 
         this.cooldown = new Collection();

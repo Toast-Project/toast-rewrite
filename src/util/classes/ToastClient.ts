@@ -1,5 +1,5 @@
 import { Client, Collection } from "discord.js";
-import RandomString from "jvar/utility/randomString";
+import randomString from "jvar/utility/randomString";
 import config from "../../config";
 import { existsSync, lstatSync, readdirSync } from "fs";
 import { join } from "@fireflysemantics/join";
@@ -10,6 +10,7 @@ import Database from "../database/functions";
 import SlashCommand from "./SlashCommand";
 import fetch from "node-fetch";
 import checkSlashPermissions from "../functions/checkSlashPermissions";
+import checkReminders from "../functions/checkReminders";
 
 const commandsDirectory = resolve(__dirname, "..", "..", "commands");
 const slashCommandsDirectory = resolve(__dirname, "..", "..", "slashCommands");
@@ -19,7 +20,6 @@ export default class ToastClient extends Client {
     constructor(options?: any) {
         super(options || {});
 
-        this.randomString = RandomString;
         this.commands = new Collection();
         this.slashCommands = new Collection();
         this.config = config;
@@ -33,12 +33,15 @@ export default class ToastClient extends Client {
         };
     }
 
+    randomId = () => randomString(16, "0123456789abcdef");
+
     async connect() {
         await super.login(process.env.CLIENT_TOKEN);
         await this._loadEvents(eventsDirectory);
         await this._loadCommands(commandsDirectory);
         await this._loadSlashCommands(slashCommandsDirectory);
         await this._loadDB();
+        ToastClient.checkReminders(this);
         await console.log(`[COMMANDS]: ${this.commands.size} command(s) loaded`)
 
         return this;
@@ -92,30 +95,32 @@ export default class ToastClient extends Client {
     }
 
     private async _loadSlashCommands(directory) {
+        const commands = [];
+
         for (const filename of readdirSync(directory, "utf8")) {
             if (filename.endsWith(".js") || filename.endsWith(".ts")) {
                 const commandClass = require(join(directory, filename))["default"];
                 const command: SlashCommand = new commandClass(this);
                 command.conf.path = join(directory, filename);
 
-                const body = {
+                commands.push({
                     name: command.help.name,
-                    description: command.help.description
-                }
-
-                fetch(`https://discord.com/api/applications/${this.user.id}/commands/`, {
-                    method: "post",
-                    body: JSON.stringify(body),
-                    headers: {
-                        Authorization: "Bot " + this.token,
-                        "Content-Type": "application/json"
-                    },
-                })
-                    .then(res => res.json());
+                    description: command.help.description,
+                    options: command.conf.options
+                });
 
                 this.slashCommands.set(command.help.name, command);
             }
         }
+
+        await fetch(`https://discord.com/api/v8/applications/${this.user.id}/commands`, {
+            method: "PUT",
+            body: JSON.stringify(commands),
+            headers: {
+                Authorization: "Bot " + this.token,
+                "Content-Type": "application/json"
+            }
+        });
 
         // @ts-ignore
         this.ws.on("INTERACTION_CREATE", async interaction => {
@@ -160,5 +165,9 @@ export default class ToastClient extends Client {
 
     private async _loadDB() {
         await Database(this);
+    }
+
+    private static checkReminders(client) {
+        setTimeout(checkReminders, 60000, client);
     }
 }
