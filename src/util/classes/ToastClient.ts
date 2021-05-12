@@ -148,7 +148,7 @@ export default class ToastClient extends Client {
 
             if (response === 401) return this["api"]["interactions"](interaction.id)(interaction.token).callback.post({
                 data: {
-                    type: 4,
+                    type: 64,
                     data: {
                         embeds: [needEmbed]
                     }
@@ -158,7 +158,7 @@ export default class ToastClient extends Client {
             if (response) {
                 return this["api"]["interactions"](interaction.id)(interaction.token).callback.post({
                     data: {
-                        type: 4,
+                        type: 64,
                         data: {
                             embeds: [noEmbed]
                         }
