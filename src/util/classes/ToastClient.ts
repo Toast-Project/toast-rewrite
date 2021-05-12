@@ -10,7 +10,6 @@ import Database from "../database/functions";
 import SlashCommand from "./SlashCommand";
 import fetch from "node-fetch";
 import checkSlashPermissions from "../functions/checkSlashPermissions";
-import Embed from "../functions/embed";
 
 const commandsDirectory = resolve(__dirname, "..", "..", "commands");
 const slashCommandsDirectory = resolve(__dirname, "..", "..", "slashCommands");
@@ -135,22 +134,11 @@ export default class ToastClient extends Client {
 
             const response = await checkSlashPermissions(this, interaction, command);
 
-            const noEmbed = Embed({
-                title: "Missing Permissions",
-                color: "RED",
-                description: `The minimum permission level required to run this command is: \`${response}\``
-            });
-            const needEmbed = Embed({
-                title: "Toast Required",
-                color: "RED",
-                description: `Toast must be in this server in order to use slash commands.`
-            });
-
             if (response === 401) return this["api"]["interactions"](interaction.id)(interaction.token).callback.post({
                 data: {
                     type: 64,
                     data: {
-                        embeds: [needEmbed]
+                        content: "Toast must be in this server in order to use slash commands."
                     }
                 }
             });
@@ -160,7 +148,7 @@ export default class ToastClient extends Client {
                     data: {
                         type: 64,
                         data: {
-                            embeds: [noEmbed]
+                            content: `The minimum permission level required to run this command is: \`${response}\``
                         }
                     }
                 });
