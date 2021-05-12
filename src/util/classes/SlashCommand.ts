@@ -3,12 +3,14 @@ import { Client, Collection } from "discord.js";
 interface Help {
     name: string;
     description: string;
+    category: string;
 }
 
 interface Conf {
     permissionLevel?: number;
     cooldown?: number;
     path?: any;
+    hidden?: boolean;
 }
 
 type CommandOptions = Help & Conf;
@@ -24,12 +26,14 @@ export default abstract class SlashCommand {
         this.help = {
             name: options.name || null,
             description: options.description || "No information specified.",
+            category: options.category || "NA"
         };
 
         this.conf = {
             permissionLevel: options.permissionLevel || 0,
             cooldown: options.cooldown || 0,
-            path: options.path || null
+            path: options.path || null,
+            hidden: options.hidden || false
         };
 
         this.cooldown = new Collection();
@@ -42,6 +46,10 @@ export default abstract class SlashCommand {
         setTimeout(() => {
             this.cooldown.get(guild).delete(user);
         }, this.conf.cooldown);
+    }
+
+    post(client, interaction, data) {
+        return client["api"]["interactions"](interaction.id)(interaction.token).callback.post({ data });
     }
 
     public abstract run(...args: readonly unknown[]): unknown;

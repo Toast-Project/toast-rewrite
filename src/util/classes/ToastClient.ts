@@ -104,7 +104,7 @@ export default class ToastClient extends Client {
                     description: command.help.description
                 }
 
-                fetch(`https://discord.com/api/applications/${this.user.id}/commands`, {
+                fetch(`https://discord.com/api/applications/${this.user.id}/commands/`, {
                     method: "post",
                     body: JSON.stringify(body),
                     headers: {
