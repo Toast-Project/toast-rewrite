@@ -1,6 +1,6 @@
 import SlashCommand from "../util/classes/SlashCommand";
 import ToastClient from "../util/classes/ToastClient";
-import ms from "ms";
+import ms = require("ms");
 
 export default class extends SlashCommand {
     public constructor(client: ToastClient) {
@@ -32,8 +32,9 @@ export default class extends SlashCommand {
         duration = ms(duration);
 
         if (!duration) return this.post(client, interaction, {
-            type: 64,
+            type: 4,
             data: {
+                flags: 1 << 6,
                 content: "You must provide a valid duration (eg. 10m or 8h)."
             }
         });

@@ -6,7 +6,8 @@ export default async function (client) {
 
         if ((createdAt + duration) >= Date.now()) {
             const commandChannel = await client.channels.cache.get(channel);
-            if (channel) commandChannel.send(`<@!${user}>: You asked me to remind you: \`${text}\``);
+            if (channel) commandChannel.send(`<@!${user}>: You asked me to remind you: \`${text}\``)
+                .catch(() => null);
             await client.db.reminders.delete(_id);
         }
     }

@@ -1,5 +1,5 @@
 import { Client, Collection } from "discord.js";
-import randomString from "jvar/utility/randomString";
+import randomString = require("jvar/utility/randomString");
 import config from "../../config";
 import { existsSync, lstatSync, readdirSync } from "fs";
 import { join } from "@fireflysemantics/join";
@@ -33,7 +33,9 @@ export default class ToastClient extends Client {
         };
     }
 
-    randomId = () => randomString(16, "0123456789abcdef");
+    randomId() {
+        return randomString(16, "0123456789abcdef");
+    }
 
     async connect() {
         await super.login(process.env.CLIENT_TOKEN);
@@ -41,7 +43,7 @@ export default class ToastClient extends Client {
         await this._loadCommands(commandsDirectory);
         await this._loadSlashCommands(slashCommandsDirectory);
         await this._loadDB();
-        ToastClient.checkReminders(this);
+        await ToastClient.checkReminders(this);
         await console.log(`[COMMANDS]: ${this.commands.size} command(s) loaded`)
 
         return this;
@@ -141,8 +143,9 @@ export default class ToastClient extends Client {
 
             if (response === 401) return this["api"]["interactions"](interaction.id)(interaction.token).callback.post({
                 data: {
-                    type: 64,
+                    type: 4,
                     data: {
+                        flags: 1 << 6,
                         content: "Toast must be in this server in order to use slash commands."
                     }
                 }
@@ -151,8 +154,9 @@ export default class ToastClient extends Client {
             if (response) {
                 return this["api"]["interactions"](interaction.id)(interaction.token).callback.post({
                     data: {
-                        type: 64,
+                        type: 4,
                         data: {
+                            flags: 1 << 6,
                             content: `The minimum permission level required to run this command is: \`${response}\``
                         }
                     }
@@ -168,6 +172,6 @@ export default class ToastClient extends Client {
     }
 
     private static checkReminders(client) {
-        setTimeout(checkReminders, 60000, client);
+        setTimeout(checkReminders, 30000, client);
     }
 }

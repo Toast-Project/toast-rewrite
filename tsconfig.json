@@ -29,7 +29,8 @@
     "types": [
       "node",
       "discord.js",
-      "mongodb"
+      "mongodb",
+      "ms"
     ]
   },
   "include": [
