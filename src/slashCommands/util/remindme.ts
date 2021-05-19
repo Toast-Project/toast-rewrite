@@ -1,5 +1,5 @@
-import SlashCommand from "../util/classes/SlashCommand";
-import ToastClient from "../util/classes/ToastClient";
+import SlashCommand from "../../util/classes/SlashCommand";
+import ToastClient from "../../util/classes/ToastClient";
 import ms = require("ms");
 
 export default class extends SlashCommand {
@@ -7,7 +7,6 @@ export default class extends SlashCommand {
         super(client, {
             name: "remindme",
             description: "Create a reminder.",
-            category: "util",
             options: [
                 {
                     "type": 3,
@@ -35,7 +34,7 @@ export default class extends SlashCommand {
             type: 4,
             data: {
                 flags: 1 << 6,
-                content: "You must provide a valid duration (eg. 10m or 8h)."
+                content: "<:no:811763209237037058> You must provide a valid duration (eg. 10m or 8h)."
             }
         });
 

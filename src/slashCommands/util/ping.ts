@@ -1,13 +1,12 @@
-import SlashCommand from "../util/classes/SlashCommand";
-import ToastClient from "../util/classes/ToastClient";
-import Embed from "../util/functions/embed";
+import SlashCommand from "../../util/classes/SlashCommand";
+import ToastClient from "../../util/classes/ToastClient";
+import Embed from "../../util/functions/embed";
 
 export default class extends SlashCommand {
     public constructor(client: ToastClient) {
         super(client, {
             name: "ping",
             description: "View the Discord API latency",
-            category: "util"
         });
     }
 

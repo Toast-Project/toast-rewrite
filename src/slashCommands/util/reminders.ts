@@ -1,14 +1,13 @@
-import SlashCommand from "../util/classes/SlashCommand";
-import ToastClient from "../util/classes/ToastClient";
+import SlashCommand from "../../util/classes/SlashCommand";
+import ToastClient from "../../util/classes/ToastClient";
 import ms = require("ms");
-import embed from "../util/functions/embed";
+import embed from "../../util/functions/embed";
 
 export default class extends SlashCommand {
     public constructor(client: ToastClient) {
         super(client, {
             name: "reminders",
             description: "View your upcoming reminders.",
-            category: "util",
         });
     }
 

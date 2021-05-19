@@ -1,13 +1,12 @@
-import SlashCommand from "../util/classes/SlashCommand";
-import ToastClient from "../util/classes/ToastClient";
-import Embed from "../util/functions/embed";
+import SlashCommand from "../../util/classes/SlashCommand";
+import ToastClient from "../../util/classes/ToastClient";
+import Embed from "../../util/functions/embed";
 
 export default class extends SlashCommand {
     public constructor(client: ToastClient) {
         super(client, {
             name: "help",
             description: "View a list of Toast's commands.",
-            category: "util"
         });
     }
 
@@ -24,6 +23,7 @@ export default class extends SlashCommand {
         });
 
         embed.addField("Utility", getCommands("util"));
+        embed.addField("Moderation", getCommands("mod"));
 
         return this.post(client, interaction, {
             type: 4,

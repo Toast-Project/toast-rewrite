@@ -4,10 +4,15 @@ export default async function (client) {
     for (const reminder in reminders) {
         const { _id, duration, createdAt, user, text, channel } = reminders[reminder];
 
-        if ((createdAt + duration) >= Date.now()) {
+        if ((createdAt + duration) <= Date.now()) {
             const commandChannel = await client.channels.cache.get(channel);
-            if (channel) commandChannel.send(`<@!${user}>: You asked me to remind you: \`${text}\``)
-                .catch(() => null);
+
+            try {
+                commandChannel.send(`<@!${user}>: You asked me to remind you: \`${text}\``);
+            } catch (e) {
+                console.log(e);
+            }
+
             await client.db.reminders.delete(_id);
         }
     }

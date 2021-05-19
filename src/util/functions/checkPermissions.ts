@@ -9,8 +9,8 @@ export default async function (client: ToastClient, message: Message, command: C
     const [mod, admin] = [message.guild.data?.roles?.mod, message.guild.data?.roles?.admin];
     const commands = message.guild.data?.commands || {};
 
-    const cmdLevel = commands[command.help.name].permissionLevel || command.conf.permissionLevel || 0;
-    const cmdRole = commands[command.help.name].permissionLevel ? message.guild.roles.cache.get(getId(cmdLevel)) : null;
+    const cmdLevel = commands[command.help.name]?.permissionLevel || command.conf?.permissionLevel || 0;
+    const cmdRole = commands[command.help.name]?.permissionLevel ? message.guild.roles.cache.get(getId(cmdLevel)) : null;
 
     if (mod && message.member.roles.cache.get(mod)) permLevel = 1;
     if (admin && message.member.roles.cache.get(admin)) permLevel = 2;

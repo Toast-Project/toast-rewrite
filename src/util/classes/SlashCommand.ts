@@ -3,7 +3,7 @@ import { Client, Collection } from "discord.js";
 interface Help {
     name: string;
     description: string;
-    category: string;
+    category?: string;
 }
 
 interface Conf {
@@ -27,7 +27,7 @@ export default abstract class SlashCommand {
         this.help = {
             name: options.name || null,
             description: options.description || "No information specified.",
-            category: options.category || "NA"
+            category: options.category || null
         };
 
         this.conf = {

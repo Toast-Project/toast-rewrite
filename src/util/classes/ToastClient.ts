@@ -11,6 +11,8 @@ import SlashCommand from "./SlashCommand";
 import fetch from "node-fetch";
 import checkSlashPermissions from "../functions/checkSlashPermissions";
 import checkReminders from "../functions/checkReminders";
+import checkMutes from "../functions/checkMutes";
+const commands = [];
 
 const commandsDirectory = resolve(__dirname, "..", "..", "commands");
 const slashCommandsDirectory = resolve(__dirname, "..", "..", "slashCommands");
@@ -39,12 +41,23 @@ export default class ToastClient extends Client {
 
     async connect() {
         await super.login(process.env.CLIENT_TOKEN);
+        await this._loadDB();
         await this._loadEvents(eventsDirectory);
         await this._loadCommands(commandsDirectory);
         await this._loadSlashCommands(slashCommandsDirectory);
-        await this._loadDB();
-        await ToastClient.checkReminders(this);
-        await console.log(`[COMMANDS]: ${this.commands.size} command(s) loaded`)
+        await console.log(`[COMMANDS]: ${this.commands.size} command(s) loaded`);
+        await console.log(`[SLASHCOMMANDS]: ${this.slashCommands.size} slash-command(s) loaded`);
+        await setTimeout(checkReminders, 60000, this);
+        await setTimeout(checkMutes, 60000, this);
+
+        await fetch(`https://discord.com/api/v8/applications/${this.user.id}/commands`, {
+            method: "PUT",
+            body: JSON.stringify(commands),
+            headers: {
+                Authorization: "Bot " + this.token,
+                "Content-Type": "application/json"
+            }
+        });
 
         return this;
     }
@@ -97,13 +110,20 @@ export default class ToastClient extends Client {
     }
 
     private async _loadSlashCommands(directory) {
-        const commands = [];
-
         for (const filename of readdirSync(directory, "utf8")) {
-            if (filename.endsWith(".js") || filename.endsWith(".ts")) {
+            if (
+                !filename.endsWith(".js") &&
+                !filename.endsWith(".ts") &&
+                lstatSync(join(directory, filename)).isDirectory()
+            )
+                await this._loadSlashCommands(join(directory, filename));
+            else if (filename.endsWith(".js") || filename.endsWith(".ts")) {
                 const commandClass = require(join(directory, filename))["default"];
                 const command: SlashCommand = new commandClass(this);
                 command.conf.path = join(directory, filename);
+
+                const split = join(directory, filename).split(/[\/\\]/g);
+                command.help.category = split[split.length - 2];
 
                 commands.push({
                     name: command.help.name,
@@ -114,15 +134,6 @@ export default class ToastClient extends Client {
                 this.slashCommands.set(command.help.name, command);
             }
         }
-
-        await fetch(`https://discord.com/api/v8/applications/${this.user.id}/commands`, {
-            method: "PUT",
-            body: JSON.stringify(commands),
-            headers: {
-                Authorization: "Bot " + this.token,
-                "Content-Type": "application/json"
-            }
-        });
 
         // @ts-ignore
         this.ws.on("INTERACTION_CREATE", async interaction => {
@@ -165,13 +176,11 @@ export default class ToastClient extends Client {
 
             return command.run(this, interaction);
         });
+
+        return this;
     }
 
     private async _loadDB() {
         await Database(this);
-    }
-
-    private static checkReminders(client) {
-        setTimeout(checkReminders, 30000, client);
     }
 }
