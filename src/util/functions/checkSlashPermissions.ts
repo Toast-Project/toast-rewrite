@@ -22,6 +22,9 @@ export default async function (client: ToastClient, interaction, command: SlashC
     if (member.user.id === guild.ownerID) permLevel = 4;
     if (client.config.developers.includes(member.id)) permLevel = 5;
 
-    if (!command.conf.permissionLevel || (permLevel >= cmdLevel)) return;
-    else return client.config.permissionLevels[cmdLevel] || `Level ${cmdLevel}`;
+    if (cmdLevel < 1 || (permLevel >= cmdLevel)) {
+        return;
+    } else {
+        return client.config.permissionLevels[cmdLevel] || `Level ${cmdLevel}`;
+    }
 }
