@@ -137,8 +137,8 @@ export default class ToastClient extends Client {
 
         // @ts-ignore
         this.ws.on("INTERACTION_CREATE", async interaction => {
-            const path = resolve(__dirname, "..", "..", `slashCommands/${interaction.data.name}.js`);
-            if (!existsSync(path)) return this["api"]["interactions"](interaction.id)(interaction.token).callback.post({
+            const path = this.slashCommands.get(interaction.data.name).conf.path;
+            if (!path || !existsSync(path)) return this["api"]["interactions"](interaction.id)(interaction.token).callback.post({
                 data: {
                     type: 4,
                     data: {
