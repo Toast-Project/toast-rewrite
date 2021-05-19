@@ -50,7 +50,7 @@ export default class extends SlashCommand {
         const guild = await client.guilds.cache.get(interaction.guild_id);
         const member = guild.member(user);
         const author = guild.member(interaction.member.user.id);
-        const { roles } = guild.data;
+        let muteRole = guild?.data?.roles?.mute;
 
         if (!member) {
             return this.post(client, interaction, {
@@ -75,7 +75,7 @@ export default class extends SlashCommand {
             });
         }
 
-        let muteRole = guild.roles.cache.get(roles.mute);
+        muteRole = guild.roles.cache.get(muteRole);
         if (!muteRole) {
             try {
                 const role = await guild.roles.create({
