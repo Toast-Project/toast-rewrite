@@ -18,6 +18,8 @@ const commandsDirectory = resolve(__dirname, "..", "..", "commands");
 const slashCommandsDirectory = resolve(__dirname, "..", "..", "slashCommands");
 const eventsDirectory = resolve(__dirname, "..", "..", "events");
 
+const interactionCache = new Set();
+
 export default class ToastClient extends Client {
     constructor(options?: any) {
         super(options || {});
@@ -137,6 +139,8 @@ export default class ToastClient extends Client {
 
         // @ts-ignore
         this.ws.on("INTERACTION_CREATE", async interaction => {
+            if (interactionCache.has(interaction.id)) return;
+
             const path = this.slashCommands.get(interaction.data.name).conf.path;
             if (!path || !existsSync(path)) return this["api"]["interactions"](interaction.id)(interaction.token).callback.post({
                 data: {
@@ -149,6 +153,7 @@ export default class ToastClient extends Client {
 
             const commandClass = require(path)["default"];
             const command: SlashCommand = new commandClass(this);
+            interactionCache.add(interaction.id);
 
             const response = await checkSlashPermissions(this, interaction, command);
 
