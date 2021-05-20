@@ -13,5 +13,5 @@ export async function init() {
     const connection = await client.connect();
 
     console.log("[DATABASE]: MongoDB connection successfully opened!");
-    return connection.db("data");
+    return connection.db("test");
 }
