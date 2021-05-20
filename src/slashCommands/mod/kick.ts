@@ -1,6 +1,7 @@
 import SlashCommand from "../../util/classes/SlashCommand";
 import ToastClient from "../../util/classes/ToastClient";
 import userPermissions from "../../util/functions/userPermissions";
+import { CommandInteraction, GuildMember, Snowflake } from "discord.js";
 
 export default class extends SlashCommand {
     public constructor(client: ToastClient) {
@@ -27,62 +28,31 @@ export default class extends SlashCommand {
         });
     }
 
-    public async run(client: ToastClient, interaction) {
-        let [user, reason] = interaction.data.options.map(v => v.value);
-        user = await client.users.fetch(user)
+    public async run(client: ToastClient, interaction: CommandInteraction) {
+        let [user, reason] = interaction.options.map(v => v.value);
+        const resolvedUser = await client.users.fetch(<Snowflake>user)
             .catch(e => {
-                return this.post(client, interaction, {
-                    type: 4,
-                    data: {
-                        flags: 1 << 6,
-                        content: "<:no:811763209237037058> An error occurred while trying to fetch the user. Please report this to the Toast development team."
-                    }
-                });
+                return interaction.reply("<:no:811763209237037058> An error occurred while trying to fetch the user. Please report this to the Toast development team.", { ephemeral: true });
             });
 
-        const guild = await client.guilds.cache.get(interaction.guild_id);
-        const member = guild.member(user);
-        const author = guild.member(interaction.member.user.id);
+        if (!resolvedUser) return interaction.reply("<:no:811763209237037058> An error occurred while trying to fetch the user. Please report this to the Toast development team.", { ephemeral: true });
 
-        if (!member) {
-            return this.post(client, interaction, {
-                type: 4,
-                data: {
-                    flags: 1 << 6,
-                    content: "<:no:811763209237037058> The user provided is not in the server."
-                }
-            });
-        }
+        const guild = interaction.guild;
+        const member = guild.members.cache.get(<Snowflake>user);
+        const author = <GuildMember>interaction.member;
 
         const authorPermLevel = await userPermissions(client, interaction, author);
-        const targetPermLevel = await userPermissions(client, interaction, member);
+        const targetPermLevel = member ? await userPermissions(client, interaction, member) : 0;
 
         if (targetPermLevel >= authorPermLevel) {
-            return this.post(client, interaction, {
-                type: 4,
-                data: {
-                    flags: 1 << 6,
-                    content: "<:no:811763209237037058> Your permission level must be higher than the specified user in order to kick them."
-                }
-            });
+            return interaction.reply("<:no:811763209237037058> Your permission level must be higher than the specified user in order to kick them.", { ephemeral: true });
         }
 
-        await member.kick(reason || "No reason provided")
+        await member.kick(reason.toString() || "No reason provided")
             .catch(e => {
-                return this.post(client, interaction, {
-                    type: 4,
-                    data: {
-                        flags: 1 << 6,
-                        content: `<:no:811763209237037058> The following error occurred while attempting to kick this member:\n\`\`\`${e}\`\`\``
-                    }
-                });
+                return interaction.reply(`<:no:811763209237037058> The following error occurred while attempting to kick this member:\n\`\`\`${e}\`\`\``, { ephemeral: true });
             });
 
-        return this.post(client, interaction, {
-            type: 4,
-            data: {
-                content: `<:check:811763193453477889> \`${user.tag}\` has been kicked${reason ? ` for \`${reason}\`.` : "."}`
-            }
-        });
+        return interaction.reply(`<:check:811763193453477889> \`${resolvedUser.tag}\` has been kicked${reason ? ` for \`${reason}\`.` : "."}`);
     }
 }

@@ -1,4 +1,4 @@
-import { Client, Collection } from "discord.js";
+import { ApplicationCommandData, Client, Collection } from "discord.js";
 
 interface Help {
     name: string;
@@ -16,13 +16,20 @@ interface Conf {
 
 type CommandOptions = Help & Conf;
 
-export default abstract class SlashCommand {
+export default abstract class SlashCommand implements ApplicationCommandData {
+    public name: string;
+    public description: string;
+    public options: Array<any>;
     public conf: Conf;
     public help: Help;
     public cooldown: Collection<any, any>;
 
     protected constructor(public client: Client, options: CommandOptions) {
         this.client = client;
+        this.name = options.name || null;
+        this.description = options.description || null;
+        this.options = options.options || null;
+        this.name = options.name || null;
 
         this.help = {
             name: options.name || null,

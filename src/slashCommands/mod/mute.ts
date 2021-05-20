@@ -2,6 +2,7 @@ import SlashCommand from "../../util/classes/SlashCommand";
 import ToastClient from "../../util/classes/ToastClient";
 import userPermissions from "../../util/functions/userPermissions";
 import ms = require("ms");
+import { CommandInteraction, GuildMember, Snowflake } from "discord.js";
 
 export default class extends SlashCommand {
     public constructor(client: ToastClient) {
@@ -35,53 +36,37 @@ export default class extends SlashCommand {
         });
     }
 
-    public async run(client: ToastClient, interaction) {
-        let [user, duration, reason] = interaction.data.options.map(v => v.value);
-        duration = ms(duration);
+    public async run(client: ToastClient, interaction: CommandInteraction) {
+        let [user, duration, reason] = interaction.options.map(v => v.value);
+        duration = ms(duration.toString());
 
-        if (!duration) return this.post(client, interaction, {
-            type: 4,
-            data: {
-                flags: 1 << 6,
-                content: "<:no:811763209237037058> You must provide a valid duration (eg. 10m or 8h)."
-            }
-        });
+        if (!duration) return interaction.reply("<:no:811763209237037058> You must provide a valid duration (eg. 10m or 8h).", { ephemeral: true })
 
-        const guild = await client.guilds.cache.get(interaction.guild_id);
-        const member = guild.member(user);
-        const author = guild.member(interaction.member.user.id);
-        let muteRole = guild?.data?.roles?.mute;
-
-        if (!member) {
-            return this.post(client, interaction, {
-                type: 4,
-                data: {
-                    flags: 1 << 6,
-                    content: "<:no:811763209237037058> The user provided is not in the server."
-                }
+        const resolvedUser = await client.users.fetch(<Snowflake>user)
+            .catch(e => {
+                return interaction.reply("<:no:811763209237037058> An error occurred while trying to fetch the user. Please report this to the Toast development team.", { ephemeral: true });
             });
-        }
+
+        if (!resolvedUser) return interaction.reply("<:no:811763209237037058> An error occurred while trying to fetch the user. Please report this to the Toast development team.", { ephemeral: true });
+
+        const guild = interaction.guild;
+        const member = guild.members.cache.get(<Snowflake>user);
+        const author = <GuildMember>interaction.member;
 
         const authorPermLevel = await userPermissions(client, interaction, author);
-        const targetPermLevel = await userPermissions(client, interaction, member);
+        const targetPermLevel = member ? await userPermissions(client, interaction, member) : 0;
 
         if (targetPermLevel >= authorPermLevel) {
-            return this.post(client, interaction, {
-                type: 4,
-                data: {
-                    flags: 1 << 6,
-                    content: "<:no:811763209237037058> Your permission level must be higher than the specified user in order to mute them."
-                }
-            });
+            return interaction.reply("<:no:811763209237037058> Your permission level must be higher than the specified user in order to mute them.", { ephemeral: true });
         }
+
+        let muteRole = interaction.guild.data?.roles?.mute;
 
         muteRole = guild.roles.cache.get(muteRole);
         if (!muteRole) {
             try {
                 const role = await guild.roles.create({
-                    data: {
-                        name: "Muted"
-                    },
+                    name: "Muted",
                     reason: "Feel free to change the name of this role"
                 });
 
@@ -96,15 +81,9 @@ export default class extends SlashCommand {
                 }
 
                 muteRole = role;
-                await client.db.guilds.setMuteRole(guild.id, muteRole.id);
+                await client.db.guilds.setMuteRole(guild.id, role.id);
             } catch (err) {
-                return this.post(client, interaction, {
-                    type: 4,
-                    data: {
-                        flags: 1 << 6,
-                        content: `<:no:811763209237037058> I am missing permission to create roles or manage channels. Please give me these permissions, or create a Muted role and use the setmuterole command to configure it.`
-                    }
-                });
+                return interaction.reply(`<:no:811763209237037058> I am missing permission to create roles or manage channels. Please give me these permissions, or create a Muted role and use the setmuterole command to configure it.`, { ephemeral: true });
             }
         }
 
@@ -115,44 +94,25 @@ export default class extends SlashCommand {
 
         await member.roles.add(muteRole)
             .catch(e => {
-                return this.post(client, interaction, {
-                    type: 4,
-                    data: {
-                        flags: 1 << 6,
-                        content: `<:no:811763209237037058> I am unable to mute the specified member. Make sure my role and the muted role is higher than the specified member.\n\nError: \`${e}\``
-                    }
-                });
+                return interaction.reply(`<:no:811763209237037058> I am unable to mute the specified member. Make sure my role and the muted role is higher than the specified member.\n\nError: \`${e}\``, { ephemeral: true });
             });
 
         const mute = {
             _id: client.randomId(),
             guild: guild.id,
-            mod: author.id,
-            user: user.id,
+            mod: author.user.id,
+            user: member.user.tag,
             createdAt: Date.now(),
             active: true,
-            role: muteRole.id,
             duration,
-            fullDuration: ms(duration, { long: true }),
             reason
         };
 
         await client.db.mutes.insert(mute)
             .catch(e => {
-                return this.post(client, interaction, {
-                    type: 4,
-                    data: {
-                        flags: 1 << 6,
-                        content: `<:no:811763209237037058> An unexpected error occurred. Please report this to the Toast development team.\n\nError: \`${e}\``
-                    }
-                });
+                return interaction.reply(`<:no:811763209237037058> An unexpected error occurred. Please report this to the Toast development team.\n\nError: \`${e}\``, { ephemeral: true })
             });
 
-        return this.post(client, interaction, {
-            type: 4,
-            data: {
-                content: `<:check:811763193453477889> \`${member.user.tag}\` has been muted for \`${ms(duration, { long: true })}\`.`
-            }
-        });
+        return interaction.reply(`<:check:811763193453477889> \`${member.user.tag}\` has been muted for \`${ms(duration, { long: true })}\`.`);
     }
 }

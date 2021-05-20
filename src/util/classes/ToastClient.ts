@@ -1,24 +1,21 @@
 import { Client, Collection } from "discord.js";
 import randomString = require("jvar/utility/randomString");
 import config from "../../config";
-import { existsSync, lstatSync, readdirSync } from "fs";
+import { lstatSync, readdirSync } from "fs";
 import { join } from "@fireflysemantics/join";
 import { resolve } from "path";
 import Event from "./Event";
 import Command from "./Command";
 import Database from "../database/functions";
 import SlashCommand from "./SlashCommand";
-import fetch from "node-fetch";
-import checkSlashPermissions from "../functions/checkSlashPermissions";
 import checkReminders from "../functions/checkReminders";
 import checkMutes from "../functions/checkMutes";
-const commands = [];
 
 const commandsDirectory = resolve(__dirname, "..", "..", "commands");
 const slashCommandsDirectory = resolve(__dirname, "..", "..", "slashCommands");
 const eventsDirectory = resolve(__dirname, "..", "..", "events");
 
-const interactionCache = new Set();
+//const interactionCache = new Set();
 
 export default class ToastClient extends Client {
     constructor(options?: any) {
@@ -50,16 +47,7 @@ export default class ToastClient extends Client {
         await console.log(`[COMMANDS]: ${this.commands.size} command(s) loaded`);
         await console.log(`[SLASHCOMMANDS]: ${this.slashCommands.size} slash-command(s) loaded`);
         await setTimeout(checkReminders, 60000, this);
-        await setTimeout(checkMutes, 60000, this);
-
-        await fetch(`https://discord.com/api/v8/applications/${this.user.id}/commands`, {
-            method: "PUT",
-            body: JSON.stringify(commands),
-            headers: {
-                Authorization: "Bot " + this.token,
-                "Content-Type": "application/json"
-            }
-        });
+        await setTimeout(checkMutes, 30000, this);
 
         return this;
     }
@@ -127,60 +115,10 @@ export default class ToastClient extends Client {
                 const split = join(directory, filename).split(/[\/\\]/g);
                 command.help.category = split[split.length - 2];
 
-                commands.push({
-                    name: command.help.name,
-                    description: command.help.description,
-                    options: command.conf.options
-                });
-
                 this.slashCommands.set(command.help.name, command);
+                await this.application.commands.create(command);
             }
         }
-
-        // @ts-ignore
-        this.ws.on("INTERACTION_CREATE", async interaction => {
-            if (interactionCache.has(interaction.id)) return;
-
-            const path = this.slashCommands.get(interaction.data.name).conf.path;
-            if (!path || !existsSync(path)) return this["api"]["interactions"](interaction.id)(interaction.token).callback.post({
-                data: {
-                    type: 4,
-                    data: {
-                        content: "This command has been disabled."
-                    }
-                }
-            });
-
-            const commandClass = require(path)["default"];
-            const command: SlashCommand = new commandClass(this);
-            interactionCache.add(interaction.id);
-
-            const response = await checkSlashPermissions(this, interaction, command);
-
-            if (response === 401) return this["api"]["interactions"](interaction.id)(interaction.token).callback.post({
-                data: {
-                    type: 4,
-                    data: {
-                        flags: 1 << 6,
-                        content: "Toast must be in this server in order to use slash commands."
-                    }
-                }
-            });
-
-            if (response) {
-                return this["api"]["interactions"](interaction.id)(interaction.token).callback.post({
-                    data: {
-                        type: 4,
-                        data: {
-                            flags: 1 << 6,
-                            content: `The minimum permission level required to run this command is: \`${response}\``
-                        }
-                    }
-                });
-            }
-
-            return command.run(this, interaction);
-        });
 
         return this;
     }

@@ -1,9 +1,9 @@
 import ToastClient from "../classes/ToastClient";
 import SlashCommand from "../classes/SlashCommand";
+import { CommandInteraction } from "discord.js";
 
-export default async function (client: ToastClient, interaction, command: SlashCommand) {
-    const { guild_id, member } = interaction;
-    const guild = await client.guilds.cache.get(guild_id);
+export default async function (client: ToastClient, interaction: CommandInteraction, command: SlashCommand) {
+    const { guild, member } = interaction;
     if (!guild) return 401;
 
     const djsMember = await guild.members.cache.get(member.user.id);
@@ -18,9 +18,9 @@ export default async function (client: ToastClient, interaction, command: SlashC
 
     if (mod && djsMember.roles.cache.get(mod)) permLevel = 1;
     if (admin && djsMember.roles.cache.get(admin)) permLevel = 2;
-    if (djsMember.hasPermission("ADMINISTRATOR")) permLevel = 3;
+    if (djsMember.permissions.has("ADMINISTRATOR")) permLevel = 3;
     if (member.user.id === guild.ownerID) permLevel = 4;
-    if (client.config.developers.includes(member.id)) permLevel = 5;
+    if (client.config.developers.includes(member.user.id)) permLevel = 5;
 
     if (cmdLevel < 1 || (permLevel >= cmdLevel)) {
         return;

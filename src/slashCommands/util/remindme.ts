@@ -1,6 +1,7 @@
 import SlashCommand from "../../util/classes/SlashCommand";
 import ToastClient from "../../util/classes/ToastClient";
 import ms = require("ms");
+import { CommandInteraction } from "discord.js";
 
 export default class extends SlashCommand {
     public constructor(client: ToastClient) {
@@ -26,32 +27,21 @@ export default class extends SlashCommand {
         });
     }
 
-    public async run(client: ToastClient, interaction) {
-        let [duration, text] = interaction.data.options.map(v => v.value);
-        duration = ms(duration);
+    public async run(client: ToastClient, interaction: CommandInteraction) {
+        let [duration, text] = interaction.options.map(v => v.value);
+        duration = ms(duration.toString());
 
-        if (!duration) return this.post(client, interaction, {
-            type: 4,
-            data: {
-                flags: 1 << 6,
-                content: "<:no:811763209237037058> You must provide a valid duration (eg. 10m or 8h)."
-            }
-        });
+        if (!duration) return interaction.reply("<:no:811763209237037058> You must provide a valid duration (eg. 10m or 8h).", { ephemeral: true });
 
         await client.db.reminders.insert({
             _id: client.randomId(),
             user: interaction.member.user.id,
-            channel: interaction.channel_id,
+            channel: interaction.channelID,
             text,
             duration,
             createdAt: Date.now()
         });
 
-        return this.post(client, interaction, {
-            type: 4,
-            data: {
-                content: `<:check:811763193453477889> I will remind you in \`${ms(duration, { long: true })}\`.`
-            }
-        });
+        return interaction.reply(`<:check:811763193453477889> I will remind you in \`${ms(duration, { long: true })}\`.`);
     }
 }

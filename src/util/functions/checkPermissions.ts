@@ -14,7 +14,7 @@ export default async function (client: ToastClient, message: Message, command: C
 
     if (mod && message.member.roles.cache.get(mod)) permLevel = 1;
     if (admin && message.member.roles.cache.get(admin)) permLevel = 2;
-    if (message.member.hasPermission("ADMINISTRATOR")) permLevel = 3;
+    if (message.member.permissions.has("ADMINISTRATOR")) permLevel = 3;
     if (message.member.id === message.guild.ownerID) permLevel = 4;
     if (client.config.developers.includes(message.member.id)) permLevel = 5;
 

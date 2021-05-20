@@ -1,16 +1,17 @@
 import SlashCommand from "../../util/classes/SlashCommand";
 import ToastClient from "../../util/classes/ToastClient";
 import Embed from "../../util/functions/embed";
+import { CommandInteraction } from "discord.js";
 
 export default class extends SlashCommand {
     public constructor(client: ToastClient) {
         super(client, {
             name: "help",
-            description: "View a list of Toast's commands.",
+            description: "View a list of Toast's commands."
         });
     }
 
-    public async run(client: ToastClient, interaction) {
+    public async run(client: ToastClient, interaction: CommandInteraction) {
         const commands = client.slashCommands.filter(c => !c.conf.hidden);
         const unique = Array.from(new Set(commands.values()));
 
@@ -19,17 +20,12 @@ export default class extends SlashCommand {
             .join(", ");
 
         const embed = Embed({
-            description: `View command usage by doing /commandName`
+            description: `View command usage by typing \`/<command>\``
         });
 
         embed.addField("Utility", getCommands("util"));
         embed.addField("Moderation", getCommands("mod"));
 
-        return this.post(client, interaction, {
-            type: 4,
-            data: {
-                embeds: [embed]
-            }
-        });
+        return interaction.reply(embed);
     }
 }

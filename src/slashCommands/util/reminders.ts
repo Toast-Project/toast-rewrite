@@ -2,6 +2,7 @@ import SlashCommand from "../../util/classes/SlashCommand";
 import ToastClient from "../../util/classes/ToastClient";
 import ms = require("ms");
 import embed from "../../util/functions/embed";
+import { CommandInteraction } from "discord.js";
 
 export default class extends SlashCommand {
     public constructor(client: ToastClient) {
@@ -11,16 +12,10 @@ export default class extends SlashCommand {
         });
     }
 
-    public async run(client: ToastClient, interaction) {
+    public async run(client: ToastClient, interaction: CommandInteraction) {
         const reminders = await client.db.reminders.find({ user: interaction.member.user.id });
 
-        if (!reminders || !reminders.length) return this.post(client, interaction, {
-            type: 4,
-            data: {
-                flags: 1 << 6,
-                content: "You have no upcoming reminders."
-            }
-        });
+        if (!reminders || !reminders.length) return interaction.reply("You have no upcoming reminders.", { ephemeral: true });
 
         const remindEmbed = embed({
             title: "Upcoming Reminders"
@@ -34,11 +29,6 @@ export default class extends SlashCommand {
 
         remindEmbed.setDescription(description);
 
-        return this.post(client, interaction, {
-            type: 4,
-            data: {
-                embeds: [remindEmbed]
-            }
-        });
+        return interaction.reply(remindEmbed);
     }
 }

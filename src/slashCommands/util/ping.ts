@@ -1,6 +1,7 @@
 import SlashCommand from "../../util/classes/SlashCommand";
 import ToastClient from "../../util/classes/ToastClient";
 import Embed from "../../util/functions/embed";
+import { CommandInteraction } from "discord.js";
 
 export default class extends SlashCommand {
     public constructor(client: ToastClient) {
@@ -10,17 +11,12 @@ export default class extends SlashCommand {
         });
     }
 
-    public async run(client: ToastClient, interaction) {
+    public async run(client: ToastClient, interaction: CommandInteraction) {
         const embed = Embed({
             title: "Ping",
             description: `Pong! The Discord API latency is ${client.ws.ping}ms.`
         });
 
-        return this.post(client, interaction, {
-            type: 4,
-            data: {
-                embeds: [embed]
-            }
-        });
+        return interaction.reply(embed);
     }
 }
