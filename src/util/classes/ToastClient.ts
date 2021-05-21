@@ -46,8 +46,8 @@ export default class ToastClient extends Client {
         await this._loadSlashCommands(slashCommandsDirectory);
         await console.log(`[COMMANDS]: ${this.commands.size} command(s) loaded`);
         await console.log(`[SLASHCOMMANDS]: ${this.slashCommands.size} slash-command(s) loaded`);
-        await setTimeout(checkReminders, 60000, this);
-        await setTimeout(checkMutes, 30000, this);
+        await setInterval(checkReminders, 60000, this);
+        await setInterval(checkMutes, 30000, this);
 
         return this;
     }

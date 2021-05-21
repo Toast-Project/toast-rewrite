@@ -2,24 +2,23 @@ import { Guild, GuildMember, Role } from "discord.js";
 import ToastClient from "../classes/ToastClient";
 
 export default async function (client: ToastClient) {
-    console.log("dad");
-    const mutes = await client.db.mutes.find({ active: true });
-    console.log(mutes);
-    for (const { guild, user, createdAt, duration } of mutes) {
-        const endsAt = createdAt + duration;
-        if (endsAt > Date.now()) continue;
+    const mutes = await client.db.mutes.all();
 
-        await client.db.mutes.deactivate(guild, user);
+    for (const mute in mutes) {
+        const { guild, user, createdAt, duration, active } = mutes[mute];
 
-        const g: Guild = client.guilds.cache.get(guild);
-        const role = g?.data?.roles?.mute;
+        if (((createdAt + duration) <= Date.now()) && active) {
+            const guildData = await client.db.guilds.get(guild);
+            const g: Guild = client.guilds.cache.get(guild);
+            const role = guildData?.roles?.mute;
 
-        const r: Role = g.roles.cache.get(role);
-        if (!r) continue;
+            const r: Role = g.roles.cache.get(role);
+            if (!r) continue;
 
-        const m: GuildMember = await g.members.fetch(user);
-        if (!m) continue;
+            const m: GuildMember = await g.members.fetch(user);
+            if (!m) continue;
 
-        await m.roles.remove(r);
+            await m.roles.remove(r);
+        }
     }
 }

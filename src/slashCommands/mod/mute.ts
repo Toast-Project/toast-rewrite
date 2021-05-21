@@ -101,7 +101,7 @@ export default class extends SlashCommand {
             _id: client.randomId(),
             guild: guild.id,
             mod: author.user.id,
-            user: member.user.tag,
+            user: member.user.id,
             createdAt: Date.now(),
             active: true,
             duration,
