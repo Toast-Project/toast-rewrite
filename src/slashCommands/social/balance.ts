@@ -22,7 +22,7 @@ export default class extends SlashCommand {
     }
 
     public async run(client: ToastClient, interaction: CommandInteraction) {
-        let member: any = interaction.options[0].value;
+        let member: any = interaction.options[0]?.value;
         member = interaction.guild.members.cache.get(<Snowflake>member) || interaction.member;
 
         const { economy = {} } = interaction.guild.data;
