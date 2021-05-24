@@ -1,8 +1,8 @@
 import SlashCommand from "../../util/classes/SlashCommand";
 import ToastClient from "../../util/classes/ToastClient";
-import ms = require("ms");
 import embed from "../../util/functions/embed";
 import { CommandInteraction } from "discord.js";
+import ms = require("ms");
 
 export default class extends SlashCommand {
     public constructor(client: ToastClient) {
@@ -22,7 +22,7 @@ export default class extends SlashCommand {
         });
 
         let description = "";
-        for (const reminder of reminders){
+        for (const reminder of reminders) {
             const { createdAt, duration, text } = reminder;
             description += `• ${ms((duration + createdAt) - Date.now(), { long: true })}\n\`\`\`\n${text}\n\`\`\`\n`;
         }

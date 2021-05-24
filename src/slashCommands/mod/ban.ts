@@ -2,6 +2,7 @@ import SlashCommand from "../../util/classes/SlashCommand";
 import ToastClient from "../../util/classes/ToastClient";
 import userPermissions from "../../util/functions/userPermissions";
 import { CommandInteraction, GuildMember, Snowflake } from "discord.js";
+import { notify } from "../../util/functions/log";
 
 export default class extends SlashCommand {
     public constructor(client: ToastClient) {
@@ -48,6 +49,9 @@ export default class extends SlashCommand {
         if (targetPermLevel >= authorPermLevel) {
             return interaction.reply("<:no:811763209237037058> Your permission level must be higher than the specified user in order to ban them.", { ephemeral: true });
         }
+
+        await notify(interaction.guild, resolvedUser, "ban", Date.now(), null, <string>reason || "No reason provided.")
+            .catch(e => e);
 
         await guild.members.ban(resolvedUser, { reason: reason.toString() || "No reason provided" })
             .catch(e => {

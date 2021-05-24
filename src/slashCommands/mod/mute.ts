@@ -1,8 +1,9 @@
 import SlashCommand from "../../util/classes/SlashCommand";
 import ToastClient from "../../util/classes/ToastClient";
 import userPermissions from "../../util/functions/userPermissions";
-import ms = require("ms");
 import { CommandInteraction, GuildMember, Snowflake } from "discord.js";
+import { notify } from "../../util/functions/log";
+import ms = require("ms");
 
 export default class extends SlashCommand {
     public constructor(client: ToastClient) {
@@ -77,7 +78,11 @@ export default class extends SlashCommand {
                     } else if (channel.type === "text") {
                         await channel.updateOverwrite(role, { SEND_MESSAGES: false, ADD_REACTIONS: false });
                     } else if (channel.type === "category") {
-                        await channel.updateOverwrite(role, { SEND_MESSAGES: false, ADD_REACTIONS: false, SPEAK: false });
+                        await channel.updateOverwrite(role, {
+                            SEND_MESSAGES: false,
+                            ADD_REACTIONS: false,
+                            SPEAK: false
+                        });
                     }
                 }
 
@@ -113,6 +118,9 @@ export default class extends SlashCommand {
             .catch(e => {
                 return interaction.reply(`<:no:811763209237037058> An unexpected error occurred. Please report this to the Toast development team.\n\nError: \`${e}\``, { ephemeral: true })
             });
+
+        await notify(interaction.guild, resolvedUser, "mute", Date.now(), ms(duration, { long: true }), <string>reason || "No reason provided.")
+            .catch(e => e);
 
         return interaction.reply(`<:check:811763193453477889> \`${member.user.tag}\` has been muted for \`${ms(duration, { long: true })}\`.`);
     }

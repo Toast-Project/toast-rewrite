@@ -35,7 +35,7 @@ export default class extends SlashCommand {
 
         let messagesDeleted = null;
         if (((channel): channel is TextChannel => channel.type === "text")(channel)) {
-            const { size: deleted } = typeof(amount) === "number" ? await channel.bulkDelete(amount) : null;
+            const { size: deleted } = typeof (amount) === "number" ? await channel.bulkDelete(amount) : null;
             messagesDeleted = deleted;
         }
 

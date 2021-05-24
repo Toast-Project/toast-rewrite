@@ -31,8 +31,7 @@ export default async function runCommand(client: ToastClient, message: Message, 
     if (!response) {
         await command.run(client, message, validatedArgs);
         command.startCooldown(message.guild.id, message.author.id);
-    }
-    else await message.channel.send(
+    } else await message.channel.send(
         embed({
             title: "Incorrect Usage",
             author: [message.author.tag, message.author.displayAvatarURL()],

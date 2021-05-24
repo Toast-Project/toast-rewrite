@@ -35,5 +35,6 @@
   },
   "include": [
     "./src"
-  ]
+  ],
+  "assets": ["./src/util/assets"],
 }

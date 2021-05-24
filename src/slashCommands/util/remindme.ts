@@ -1,7 +1,7 @@
 import SlashCommand from "../../util/classes/SlashCommand";
 import ToastClient from "../../util/classes/ToastClient";
-import ms = require("ms");
 import { CommandInteraction } from "discord.js";
+import ms = require("ms");
 
 export default class extends SlashCommand {
     public constructor(client: ToastClient) {

@@ -1,5 +1,4 @@
 import { Client, Collection } from "discord.js";
-import randomString = require("jvar/utility/randomString");
 import config from "../../config";
 import { lstatSync, readdirSync } from "fs";
 import { join } from "@fireflysemantics/join";
@@ -10,6 +9,7 @@ import Database from "../database/functions";
 import SlashCommand from "./SlashCommand";
 import checkReminders from "../functions/checkReminders";
 import checkMutes from "../functions/checkMutes";
+import randomString = require("jvar/utility/randomString");
 
 const commandsDirectory = resolve(__dirname, "..", "..", "commands");
 const slashCommandsDirectory = resolve(__dirname, "..", "..", "slashCommands");
@@ -85,7 +85,7 @@ export default class ToastClient extends Client {
             if (filename.endsWith(".js") || filename.endsWith(".ts")) {
                 const eventClass = require(join(directory, filename))["default"];
                 const event: Event = new eventClass(this);
-                count ++;
+                count++;
 
                 if (event.conf.once) {
                     this.once(event.conf.name, (...args) => event.run(...args));

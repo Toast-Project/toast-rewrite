@@ -1,8 +1,8 @@
 import SlashCommand from "../../util/classes/SlashCommand";
 import ToastClient from "../../util/classes/ToastClient";
-import ms = require("ms");
 import { CommandInteraction, Snowflake } from "discord.js";
 import embed from "../../util/functions/embed";
+import ms = require("ms");
 
 export default class extends SlashCommand {
     public constructor(client: ToastClient) {
@@ -34,7 +34,10 @@ export default class extends SlashCommand {
         const dailyTimeout = 86_340_000;
 
         if (member && member) member.data = await client.db.members.get(interaction.guildID, member.user.id) || {};
-        const { user, data: { bank = 0, balance = 0, lastWork = 0, lastDaily = 0, lastCrime = 0, lastRob = 0 } } = member;
+        const {
+            user,
+            data: { bank = 0, balance = 0, lastWork = 0, lastDaily = 0, lastCrime = 0, lastRob = 0 }
+        } = member;
 
         const diffRob = lastRob + robTimeout - Date.now();
         const diffWork = lastWork + workTimeout - Date.now();

@@ -5,88 +5,88 @@ export default class MemberDao extends Dao {
         super(db, "members");
     }
 
-    findByGuild(guild) {
+    findByGuild(guild: string) {
         return this.find({ guild });
     }
 
-    findByUser(user) {
+    findByUser(user: string) {
         return this.find({ user });
     }
 
-    get(guild, user) {
+    get(guild: string, user: string) {
         const id = guild + "_" + user;
         return super.get(id);
     }
 
-    cursorByGuild(guild) {
+    cursorByGuild(guild: string) {
         return this.collection.find({ guild });
     }
 
-    cursorByUser(user) {
+    cursorByUser(user: string) {
         return this.collection.find({ user });
     }
 
-    setXp(guild, user, xp = 0) {
+    setXp(guild: string, user: string, xp: number = 0) {
         const id = guild + "_" + user;
         return this.update(id, { xp });
     }
 
-    modXp(guild, user, amount) {
+    modXp(guild: string, user: string, amount: number) {
         const id = guild + "_" + user;
         return this.inc(id, 'xp', amount);
     }
 
-    setBalance(guild, user, balance = 0) {
+    setBalance(guild: string, user: string, balance: number = 0) {
         const id = guild + "_" + user;
         return this.update(id, { balance });
     }
 
-    modBalance(guild, user, change = 0) {
+    modBalance(guild: string, user: string, change: number = 0) {
         const id = guild + "_" + user;
         return this.inc(id, 'balance', change);
     }
 
-    modWorth(guild, user, change = 0) {
+    modWorth(guild: string, user: string, change: number = 0) {
         const id = guild + "_" + user;
         return this.inc(id, 'worth', change);
     }
 
-    setBank(guild, user, balance = 0) {
+    setBank(guild: string, user: string, balance: number = 0) {
         const id = guild + "_" + user;
         return this.update(id, { bank: balance });
     }
 
-    modBank(guild, user, change = 0) {
+    modBank(guild: string, user: string, change: number = 0) {
         const id = guild + "_" + user;
         return this.inc(id, 'bank', change);
     }
 
-    setRobbedBy(guild, user, target) {
+    setRobbedBy(guild: string, user: string, target: string) {
         const id = guild + "_" + user;
         return this.update(id, { robbedBy: target });
     }
 
-    addItem(guild, user, item) {
+    addItem(guild: string, user: string, item: string) {
         const id = guild + "_" + user;
         return this.push(id, 'items', item);
     }
 
-    setLastWork(guild, user, lastWork = Date.now()) {
+    setLastWork(guild: string, user: string, lastWork: number = Date.now()) {
         const id = guild + "_" + user;
         return this.update(id, { lastWork });
     }
 
-    setLastCrime(guild, user, lastCrime = Date.now()) {
+    setLastCrime(guild: string, user: string, lastCrime: number = Date.now()) {
         const id = guild + "_" + user;
         return this.update(id, { lastCrime });
     }
 
-    setLastRob(guild, user, lastRob = Date.now()) {
+    setLastRob(guild: string, user: string, lastRob: number = Date.now()) {
         const id = guild + "_" + user;
         return this.update(id, { lastRob });
     }
 
-    setLastDaily(guild, user, lastDaily = Date.now()) {
+    setLastDaily(guild: string, user: string, lastDaily: number = Date.now()) {
         const id = guild + "_" + user;
         return this.update(id, { lastDaily });
     }
