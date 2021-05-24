@@ -9,6 +9,7 @@ export default class extends SlashCommand {
             name: "adminrole",
             description: "View or set the servers admin role.",
             permissionLevel: 3,
+            category: "config",
             options: [
                 {
                     "type": 1,

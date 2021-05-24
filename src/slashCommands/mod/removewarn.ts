@@ -8,6 +8,7 @@ export default class extends SlashCommand {
             name: "removewarn",
             description: "Remove the specified members warnings.",
             permissionLevel: 1,
+            category: "mod",
             options: [
                 {
                     "type": 6,

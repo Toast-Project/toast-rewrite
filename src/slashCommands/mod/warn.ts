@@ -9,6 +9,7 @@ export default class extends SlashCommand {
             name: "warn",
             description: "Warn a member in the server.",
             permissionLevel: 1,
+            category: "mod",
             options: [
                 {
                     "type": 6,

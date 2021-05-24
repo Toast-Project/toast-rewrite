@@ -9,6 +9,7 @@ export default class extends SlashCommand {
             name: "modrole",
             description: "View or set the servers mod role.",
             permissionLevel: 3,
+            category: "config",
             options: [
                 {
                     "type": 1,

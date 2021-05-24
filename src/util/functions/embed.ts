@@ -2,7 +2,7 @@ import { ColorResolvable, MessageEmbed } from "discord.js";
 
 interface EmbedConf {
     title?: string,
-    description?: string,
+    description?: string | string[],
     thumbnail?: string,
     color?: ColorResolvable,
     footer?: Array<any>,

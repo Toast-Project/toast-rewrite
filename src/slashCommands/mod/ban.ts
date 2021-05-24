@@ -9,6 +9,7 @@ export default class extends SlashCommand {
             name: "ban",
             description: "Ban a user from the server.",
             permissionLevel: 1,
+            category: "mod",
             options: [
                 {
                     "type": 6,

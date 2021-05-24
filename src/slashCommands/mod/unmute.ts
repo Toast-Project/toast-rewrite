@@ -6,8 +6,9 @@ export default class extends SlashCommand {
     public constructor(client: ToastClient) {
         super(client, {
             name: "unmute",
-            description: "Umute a member in the server.",
+            description: "Unmute a member in the server.",
             permissionLevel: 1,
+            category: "mod",
             options: [
                 {
                     "type": 6,

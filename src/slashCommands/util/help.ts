@@ -24,7 +24,9 @@ export default class extends SlashCommand {
         });
 
         embed.addField("Utility", getCommands("util"));
+        embed.addField("Social", getCommands("social"));
         embed.addField("Moderation", getCommands("mod"));
+        embed.addField("Configuration", getCommands("config"));
 
         return interaction.reply(embed);
     }

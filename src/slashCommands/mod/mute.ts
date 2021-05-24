@@ -10,6 +10,7 @@ export default class extends SlashCommand {
             name: "mute",
             description: "Mute a member in the server.",
             permissionLevel: 1,
+            category: "mod",
             options: [
                 {
                     "type": 6,

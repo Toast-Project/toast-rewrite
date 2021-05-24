@@ -8,6 +8,7 @@ export default class extends SlashCommand {
             name: "purge",
             description: "Bulk-delete the specified amount of messages.",
             permissionLevel: 1,
+            category: "mod",
             options: [
                 {
                     "type": 4,

@@ -11,6 +11,7 @@ export default class extends SlashCommand {
             name: "warnings",
             description: "View the specified member's moderation history.",
             permissionLevel: 1,
+            category: "mod",
             options: [
                 {
                     "type": 6,
