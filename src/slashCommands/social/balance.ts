@@ -36,7 +36,7 @@ export default class extends SlashCommand {
         if (member && member) member.data = await client.db.members.get(interaction.guildID, member.user.id) || {};
         const {
             user,
-            data: { bank = 0, balance = 0, lastWork = 0, lastDaily = 0, lastCrime = 0, lastRob = 0 }
+            data: { bank = 0, lastWork = 0, lastDaily = 0, lastCrime = 0, lastRob = 0, worth = 0 }
         } = member;
 
         const diffRob = lastRob + robTimeout - Date.now();
@@ -57,7 +57,7 @@ export default class extends SlashCommand {
             color: "GREEN",
             author: [interaction.user.tag, interaction.user.displayAvatarURL()],
             description: [
-                `${start} **${symbol}${balance}** (**${symbol}${bank}** in the bank).`,
+                `${start} **${symbol}${worth}** (**${symbol}${bank}** in the bank).`,
                 `• Time until work: ${workTime}`,
                 `• Time until crime: ${crimeTime}`,
                 `• Time until rob: ${robTime}`,

@@ -30,7 +30,7 @@ export default class extends SlashCommand {
         const { economy = {} } = interaction.guild.data;
         const symbol = economy.symbol || "$";
 
-        const { balance = 0, lastCrime = 0 } = client.db.members.get(interaction.guildID, interaction.user.id);
+        const { worth = 0, lastCrime = 0 } = client.db.members.get(interaction.guildID, interaction.user.id);
         const timeout = economy.crimeCooldown || 1_800_000;
 
         if (lastCrime + timeout > Date.now()) {
@@ -53,7 +53,7 @@ export default class extends SlashCommand {
             title: "Work",
             color: result ? "GREEN" : "RED",
             author: [interaction.user.tag, interaction.user.displayAvatarURL()],
-            description: `${response.replace(/{}/g, `**${symbol}${amount}**`)}\nYour new balance is **${symbol}${balance + amount}**.`
+            description: `${response.replace(/{}/g, `**${symbol}${amount}**`)}\nYour new balance is **${symbol}${worth + amount}**.`
         });
 
         return await interaction.reply(replyEmbed);
@@ -61,5 +61,5 @@ export default class extends SlashCommand {
 }
 
 function rand(min: number, max: number) {
-    return Math.floor(Math.random() + (max - min + 1)) + min;
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 }
