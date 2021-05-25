@@ -1,10 +1,10 @@
 import SlashCommand from "../../util/classes/SlashCommand";
 import ToastClient from "../../util/classes/ToastClient";
-import { CommandInteraction } from "discord.js";
+import { CommandInteraction, GuildMember } from "discord.js";
 import * as fs from "fs";
 import embed from "../../util/functions/embed";
-import ms = require("ms");
 import { resolve } from "path";
+import ms = require("ms");
 
 const pDir = resolve(__dirname, "..", "..", "..", "src/util/assets/responses/pCrime.txt");
 const nDir = resolve(__dirname, "..", "..", "..", "src/util/assets/responses/nCrime.txt");
@@ -29,8 +29,13 @@ export default class extends SlashCommand {
     public async run(client: ToastClient, interaction: CommandInteraction) {
         const { economy = {} } = interaction.guild.data;
         const symbol = economy.symbol || "$";
+        const member = <GuildMember>interaction.member;
 
-        const { worth = 0, lastCrime = 0 } = client.db.members.get(interaction.guildID, interaction.user.id);
+        if (member && member) member.data = await client.db.members.get(interaction.guildID, member.user.id) || {};
+        const {
+            data: { worth = 0, lastCrime = 0 }
+        } = member;
+
         const timeout = economy.crimeCooldown || 1_800_000;
 
         if (lastCrime + timeout > Date.now()) {
