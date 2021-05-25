@@ -24,7 +24,7 @@ export default class extends SlashCommand {
         let description = "";
         for (const reminder of reminders) {
             const { createdAt, duration, text } = reminder;
-            description += `• ${ms((duration + createdAt) - Date.now(), { long: true })}\n\`\`\`\n${text}\n\`\`\`\n`;
+            description += `• (${ms((duration + createdAt) - Date.now(), { long: true })}) - \`n${text}\`\n`;
         }
 
         remindEmbed.setDescription(description);

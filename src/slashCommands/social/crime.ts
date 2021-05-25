@@ -31,7 +31,7 @@ export default class extends SlashCommand {
         const symbol = economy.symbol || "$";
         const member = <GuildMember>interaction.member;
 
-        if (member && member) member.data = await client.db.members.get(interaction.guildID, member.user.id) || {};
+        if (member) member.data = await client.db.members.get(interaction.guildID, member.user.id) || {};
         const {
             data: { worth = 0, lastCrime = 0 }
         } = member;
