@@ -67,6 +67,20 @@ export default class extends SlashCommand {
                         }
                     ]
                 },
+                {
+                    "type": 1,
+                    "name": "delete",
+                    "description": "Delete a shop item",
+                    "options": [
+                        {
+                            "type": 3,
+                            "name": "name",
+                            "description": "ID of item",
+                            "default": false,
+                            "required": true
+                        }
+                    ]
+                },
             ]
         });
     }
@@ -125,7 +139,7 @@ export default class extends SlashCommand {
 
             case "create":
                 const permLevel = await userPermissions(client, interaction, <GuildMember>interaction.member);
-                if (2 > permLevel) return interaction.reply(`The minimum permission level required to run this command is: \`Administrator Role\``, { ephemeral: true });
+                if (2 > permLevel) return interaction.reply(`The minimum permission level required to run this command is: \`Administrator Role\`.`, { ephemeral: true });
 
                 let [name, description, cost, limit, role] = interaction.options[0]?.options.map(v => v.value);
                 if (typeof name !== "string" || typeof description !== "string" || typeof cost !== "number") return;
@@ -147,7 +161,7 @@ export default class extends SlashCommand {
                 const reply = embed({
                     title: "Shop",
                     description: [
-                        `Created "${name}" (id ${id})`,
+                        `<:check:811763193453477889> Created "${name}" (id ${id})`,
                         "Price: " + symbol + cost,
                         "Role: " + (role ? role : "none"),
                         "Limit: " + (limit > 0 ? limit : "none")
@@ -155,6 +169,19 @@ export default class extends SlashCommand {
                 });
 
                 return interaction.reply(reply);
+
+            case "delete":
+               if (2 > await userPermissions(client, interaction, <GuildMember>interaction.member)) return interaction.reply(`The minimum permission level required to run this command is: \`Administrator Role\`.`, { ephemeral: true });
+
+               const item = await client.db.guildShop.findOne({ _id: interaction.options[2].options[0].value, guild: interaction.guild.id });
+               if (!item) return interaction.reply("<:no:811763209237037058> The provided ID is invalid.", { ephemeral: true });
+
+               await client.db.guildShop.delete(item._id)
+                   .catch(e => {
+                       return interaction.reply(`<:no:811763209237037058> The following error occurred while attempting to delete this item:\n\`\`\`${e}\`\`\``, { ephemeral: true });
+                   });
+
+                return interaction.reply(`<:check:811763193453477889> Successfully deleted \`(${item._id})\` ${item.name} from the shop.`);
         }
     }
 }
