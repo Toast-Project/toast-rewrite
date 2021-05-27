@@ -74,7 +74,7 @@ export default class extends SlashCommand {
                     "options": [
                         {
                             "type": 3,
-                            "name": "name",
+                            "name": "id",
                             "description": "ID of item",
                             "default": false,
                             "required": true
@@ -173,7 +173,7 @@ export default class extends SlashCommand {
             case "delete":
                if (2 > await userPermissions(client, interaction, <GuildMember>interaction.member)) return interaction.reply(`The minimum permission level required to run this command is: \`Administrator Role\`.`, { ephemeral: true });
 
-               const item = await client.db.guildShop.findOne({ _id: interaction.options[2].options[0].value, guild: interaction.guild.id });
+               const item = await client.db.guildShop.findOne({ _id: interaction.options[0].options[0].value, guild: interaction.guild.id });
                if (!item) return interaction.reply("<:no:811763209237037058> The provided ID is invalid.", { ephemeral: true });
 
                await client.db.guildShop.delete(item._id)
