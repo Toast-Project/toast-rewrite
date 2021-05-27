@@ -33,7 +33,7 @@ export default class extends SlashCommand {
         const robTimeout = economy.robCooldown || 14_400_000;
         const dailyTimeout = 86_340_000;
 
-        if (member && member) member.data = await client.db.members.get(interaction.guildID, member.user.id) || {};
+        if (member) member.data = await client.db.members.get(interaction.guildID, member.user.id) || {};
         const {
             user,
             data: { bank = 0, lastWork = 0, lastDaily = 0, lastCrime = 0, lastRob = 0, worth = 0 }

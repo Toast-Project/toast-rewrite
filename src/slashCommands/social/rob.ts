@@ -34,7 +34,7 @@ export default class extends SlashCommand {
 
         if (!resolvedUser) return interaction.reply("<:no:811763209237037058> An error occurred while trying to fetch the user. Please report this to the Toast development team.", { ephemeral: true });
 
-        if (member && member) member.data = await client.db.members.get(interaction.guildID, member.user.id) || {};
+        if (member) member.data = await client.db.members.get(interaction.guildID, member.user.id) || {};
         const {
             data: { worth = 0, lastRob = 0, robbedBy = null }
         } = member;
