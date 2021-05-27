@@ -49,7 +49,7 @@ export default class extends SlashCommand {
         const symbol = economy.symbol || "$";
 
         const member = <GuildMember>interaction.member;
-        const { balance = 0, bank = 0 } = member.data;
+        const { balance = 0, bank = 0 } = member.data || {};
 
         switch (subCommand) {
             case "deposit":
