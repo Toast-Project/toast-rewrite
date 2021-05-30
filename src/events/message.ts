@@ -2,6 +2,7 @@ import ToastClient from "../util/classes/ToastClient";
 import runCommand from "../util/functions/runCommand";
 import Event from "../util/classes/Event";
 import { Message } from "discord.js";
+import { addXP } from "../util/functions/leveling";
 
 export default class extends Event {
     public constructor(client: ToastClient) {
@@ -15,7 +16,7 @@ export default class extends Event {
         message.author.data = await this.client.db.users.get(message.author.id) || {};
         message.member.data = await this.client.db.members.get(message.guild.id, message.author.id) || {};
 
-        const prefixes = ["dad, ", `<@${this.client.user.id}>`, `<@!${this.client.user.id}>`];
+        const prefixes = [`<@${this.client.user.id}>`, `<@!${this.client.user.id}>`];
         let prefix = "";
         for (const p of prefixes) {
             if (message.content.startsWith(p)) {
@@ -23,7 +24,7 @@ export default class extends Event {
                 break;
             }
         }
-        if (!prefix) return;
+        if (!prefix) return addXP(this.client, message);
 
         const args = message.content.slice(prefix.length).trim().split(" ");
         await runCommand(this.client, message, args);
