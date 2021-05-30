@@ -14,7 +14,7 @@ jobs:
         password: ${{ secrets.PASSWORD }}
         port: ${{ secrets.PORT }}
         script: |
-          cd toast-alpha/toast-rewrite
+          cd toast-rewrite
           git pull
           npm run-script build
           pm2 restart 0
