@@ -88,9 +88,9 @@ export default class ToastClient extends Client {
                 count++;
 
                 if (event.conf.once) {
-                    this.once(event.conf.name, (...args) => event.run(...args));
+                    this.once(event.conf.name, (...args: any[]) => event.run(...args));
                 } else {
-                    this.on(event.conf.name, (...args) => event.run(...args));
+                    this.on(event.conf.name, (...args: any[]) => event.run(...args));
                 }
             }
         }
