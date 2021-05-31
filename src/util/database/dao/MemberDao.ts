@@ -5,6 +5,11 @@ export default class MemberDao extends Dao {
         super(db, "members");
     }
 
+    newMember(guild, user) {
+        const id = guild + "_" + user;
+        return super.update(id, { guild, user });
+    }
+
     findByGuild(guild: string) {
         return this.find({ guild });
     }

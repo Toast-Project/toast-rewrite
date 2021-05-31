@@ -15,6 +15,8 @@ export default class extends Event {
         interaction.guild.data = await this.client.db.guilds.get(interaction.guild.id) || {};
 
         const member = <GuildMember>interaction.member;
+
+        await this.client.db.members.newMember(interaction.guild.id, interaction.user.id);
         member.data = await this.client.db.members.get(interaction.guild.id, member.user.id) || {};
 
         const command = this.client.slashCommands.get(interaction.commandName);

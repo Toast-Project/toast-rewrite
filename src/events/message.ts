@@ -12,6 +12,7 @@ export default class extends Event {
     public async run(message: Message) {
         if (message.author.bot) return;
 
+        await this.client.db.members.newMember(message.guild.id, message.author.id);
         message.guild.data = await this.client.db.guilds.get(message.guild.id) || {};
         message.author.data = await this.client.db.users.get(message.author.id) || {};
         message.member.data = await this.client.db.members.get(message.guild.id, message.author.id) || {};
