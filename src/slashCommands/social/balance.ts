@@ -36,7 +36,7 @@ export default class extends SlashCommand {
         if (member) member.data = await client.db.members.get(interaction.guildID, member.user.id) || {};
         const {
             user,
-            data: { bank = 0, lastWork = 0, lastDaily = 0, lastCrime = 0, lastRob = 0, worth = 0 }
+            data: { bank = 0, lastWork = 0, lastDaily = 0, lastCrime = 0, lastRob = 0, worth = 0, inventory = [] }
         } = member;
 
         const diffRob = lastRob + robTimeout - Date.now();
@@ -52,7 +52,22 @@ export default class extends SlashCommand {
             ? "Your current balance is: "
             : `**${user.username}'s** current balance is: `;
 
-        const reply = embed({
+        const items = [];
+        let field = "";
+
+        await interaction.defer();
+
+        for (const itm of inventory) {
+            const i = await client.db.guildShop.findOne({ _id: itm });
+            if (i) items.push(i);
+        }
+
+        for (const item of items) {
+            const itm = items[item];
+            field += `**${itm.name}** - ${symbol}${itm.cost}\n`;
+        }
+
+        const reply = await embed({
             title: "Balance",
             color: "GREEN",
             author: [interaction.user.tag, interaction.user.displayAvatarURL()],
@@ -62,9 +77,12 @@ export default class extends SlashCommand {
                 `• Time until crime: ${crimeTime}`,
                 `• Time until rob: ${robTime}`,
                 `• Time until daily: ${dailyTime}`,
-            ]
+            ],
+            fields: {
+                1: ["Items", field || "No items"]
+            }
         });
 
-        return interaction.reply(reply);
+        return interaction.followUp(reply);
     }
 }

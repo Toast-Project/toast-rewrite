@@ -73,7 +73,7 @@ export default class MemberDao extends Dao {
 
     addItem(guild: string, user: string, item: string) {
         const id = guild + "_" + user;
-        return this.push(id, 'items', item);
+        return this.push(id, 'inventory', item);
     }
 
     setLastWork(guild: string, user: string, lastWork: number = Date.now()) {
