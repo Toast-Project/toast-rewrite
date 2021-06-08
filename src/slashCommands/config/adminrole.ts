@@ -1,7 +1,6 @@
 import SlashCommand from "../../util/classes/SlashCommand";
 import ToastClient from "../../util/classes/ToastClient";
 import { CommandInteraction } from "discord.js";
-import embed from "../../util/functions/embed";
 
 export default class extends SlashCommand {
     public constructor(client: ToastClient) {
@@ -44,11 +43,7 @@ export default class extends SlashCommand {
         switch (subCommand) {
             case "view":
                 const adminRole = interaction.guild.roles.cache.get(interaction.guild.data?.roles?.admin);
-                const response = embed({
-                    title: "Admin Role",
-                    description: `The administrator role for this server${adminRole ? ` is ${adminRole}.` : " is not yet set up."}`
-                });
-                return interaction.reply(response);
+                return interaction.reply(`The administrator role for this server${adminRole ? ` is ${adminRole}.` : " is not yet set up."}`, { allowedMentions: { parse: [] } });
 
             case "set":
                 await client.db.guilds.setAdminRole(interaction.guild.id, newRole.id)
