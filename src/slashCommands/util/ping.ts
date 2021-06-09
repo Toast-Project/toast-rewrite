@@ -8,6 +8,8 @@ export default class extends SlashCommand {
         super(client, {
             name: "ping",
             description: "View the Discord API latency",
+            category: "util",
+            restricted: true
         });
     }
 

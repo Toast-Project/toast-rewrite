@@ -11,6 +11,7 @@ interface Conf {
     cooldown?: number;
     path?: any;
     hidden?: boolean;
+    restricted?: boolean;
     options?: any;
 }
 
@@ -42,6 +43,7 @@ export default abstract class SlashCommand implements ApplicationCommandData {
             cooldown: options.cooldown || 0,
             path: options.path || null,
             hidden: options.hidden || false,
+            restricted: options.restricted || false,
             options: options.options || null
         };
 

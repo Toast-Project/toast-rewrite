@@ -46,7 +46,7 @@ export default class GuildDao extends Dao {
     }
 
     setSuggestionChannel(id: string, channelId: string) {
-        return this.update(id, { ["roles.suggestion"]: channelId })
+        return this.update(id, { ["channels.suggestion"]: channelId })
     }
 
     setAdminRole(id: string, roleId: string) {

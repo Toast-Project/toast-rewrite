@@ -53,7 +53,7 @@ export default class extends SlashCommand {
         await notify(interaction.guild, resolvedUser, "kick", Date.now(), null, <string>reason || "No reason provided.")
             .catch(e => e);
 
-        await member.kick(reason.toString() || "No reason provided")
+        await member.kick(reason?.toString() || "No reason provided")
             .catch(e => {
                 return interaction.reply(`<:no:811763209237037058> The following error occurred while attempting to kick this member:\n\`\`\`${e}\`\`\``, { ephemeral: true });
             });

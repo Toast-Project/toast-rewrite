@@ -64,6 +64,7 @@ export default class extends SlashCommand {
 
         for (const item of items) {
             const itm = items[item];
+            if (!itm) continue;
             field += `**${itm.name}** - ${symbol}${itm.cost}\n`;
         }
 

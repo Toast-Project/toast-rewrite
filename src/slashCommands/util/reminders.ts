@@ -9,6 +9,8 @@ export default class extends SlashCommand {
         super(client, {
             name: "reminders",
             description: "View your upcoming reminders.",
+            category: "util",
+            restricted: true
         });
     }
 
@@ -24,7 +26,7 @@ export default class extends SlashCommand {
         let description = "";
         for (const reminder of reminders) {
             const { createdAt, duration, text } = reminder;
-            description += `• (${ms((duration + createdAt) - Date.now(), { long: true })}) - \`n${text}\`\n`;
+            description += `• (${ms((duration + createdAt) - Date.now(), { long: true })}) - \`${text}\`\n`;
         }
 
         remindEmbed.setDescription(description);

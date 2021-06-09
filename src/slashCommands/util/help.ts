@@ -7,7 +7,9 @@ export default class extends SlashCommand {
     public constructor(client: ToastClient) {
         super(client, {
             name: "help",
-            description: "View a list of Toast's commands."
+            description: "View a list of Toast's commands.",
+            category: "util",
+            restricted: true
         });
     }
 
@@ -27,6 +29,7 @@ export default class extends SlashCommand {
         embed.addField("Social", getCommands("social"));
         embed.addField("Moderation", getCommands("mod"));
         embed.addField("Configuration", getCommands("config"));
+        embed.addField("Suggestions", getCommands("suggestions"));
 
         return interaction.reply(embed);
     }

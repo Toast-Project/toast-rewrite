@@ -53,7 +53,7 @@ export default class extends SlashCommand {
         await notify(interaction.guild, resolvedUser, "ban", Date.now(), null, <string>reason || "No reason provided.")
             .catch(e => e);
 
-        await guild.members.ban(resolvedUser, { reason: reason.toString() || "No reason provided" })
+        await guild.members.ban(resolvedUser, { reason: reason?.toString() || "No reason provided" })
             .catch(e => {
                 return interaction.reply(`<:no:811763209237037058> The following error occurred while attempting to ban this member:\n\`\`\`${e}\`\`\``, { ephemeral: true });
             });

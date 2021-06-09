@@ -8,6 +8,7 @@ export default class extends SlashCommand {
         super(client, {
             name: "remindme",
             description: "Create a reminder.",
+            category: "util",
             options: [
                 {
                     "type": 3,
@@ -23,7 +24,8 @@ export default class extends SlashCommand {
                     "default": false,
                     "required": true
                 }
-            ]
+            ],
+            restricted: true
         });
     }
 

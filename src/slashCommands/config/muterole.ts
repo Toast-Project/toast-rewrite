@@ -5,26 +5,26 @@ import { CommandInteraction } from "discord.js";
 export default class extends SlashCommand {
     public constructor(client: ToastClient) {
         super(client, {
-            name: "modrole",
-            description: "View or set the servers mod role.",
+            name: "muterole",
+            description: "View or set the servers muted role.",
             permissionLevel: 2,
             category: "config",
             options: [
                 {
                     "type": 1,
                     "name": "view",
-                    "description": "View the current mod role",
+                    "description": "View the current muted role",
                     "options": []
                 },
                 {
                     "type": 1,
                     "name": "set",
-                    "description": "Set the mod role",
+                    "description": "Set the muted role",
                     "options": [
                         {
                             "type": 8,
                             "name": "role",
-                            "description": "Mod role",
+                            "description": "Mute role",
                             "required": true
                         }
                     ]
@@ -42,16 +42,16 @@ export default class extends SlashCommand {
 
         switch (subCommand) {
             case "view":
-                const modRole = interaction.guild.roles.cache.get(interaction.guild.data?.roles?.mod);
-                return interaction.reply(`The moderator role for this server${modRole ? ` is ${modRole}.` : " is not yet set up."}`, { allowedMentions: { parse: [] } });
+                const muteRole = interaction.guild.roles.cache.get(interaction.guild.data?.roles?.mute);
+                return interaction.reply(`The muted role for this server${muteRole ? ` is ${muteRole}.` : " is not yet set up."}`, { allowedMentions: { parse: [] } });
 
             case "set":
-                await client.db.guilds.setModRole(interaction.guild.id, newRole.id)
+                await client.db.guilds.setMuteRole(interaction.guild.id, newRole.id)
                     .catch(e => {
-                        return interaction.reply(`<:no:811763209237037058> The following error occurred while attempting to set the mod role:\n\`\`\`${e}\`\`\``, { ephemeral: true });
+                        return interaction.reply(`<:no:811763209237037058> The following error occurred while attempting to set the muted role:\n\`\`\`${e}\`\`\``, { ephemeral: true });
                     });
 
-                return interaction.reply(`<:check:811763193453477889> The mod role for the server has successfully been set to ${newRole}.`, { allowedMentions: { parse: [] } });
+                return interaction.reply(`<:check:811763193453477889> The muted role for the server has successfully been set to ${newRole}.`, { allowedMentions: { parse: [] } });
         }
     }
 }

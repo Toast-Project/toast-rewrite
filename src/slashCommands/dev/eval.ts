@@ -19,7 +19,8 @@ export default class extends SlashCommand {
                     "required": true
                 }
             ],
-            hidden: true
+            hidden: true,
+            restricted: true
         });
     }
 
