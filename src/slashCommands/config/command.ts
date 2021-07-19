@@ -30,12 +30,12 @@ export default class extends SlashCommand {
         const [command, bool] = interaction.options.map(v => v.value);
 
         const cmd = client.slashCommands.get(<string>command);
-        if (!cmd) return interaction.reply(`<:no:811763209237037058> The command provided does not exist.`, { ephemeral: true });
-        if (cmd.conf.restricted) return interaction.reply(`<:no:811763209237037058> This command cannot be edited.`, { ephemeral: true });
+        if (!cmd) return interaction.reply({ content: `<:no:811763209237037058> The command provided does not exist.`, ephemeral: true });
+        if (cmd.conf.restricted) return interaction.reply({ content: `<:no:811763209237037058> This command cannot be edited.`, ephemeral: true });
 
         await client.db.guilds.toggleCommand(interaction.guild.id, <string>command, <boolean>bool)
             .catch(e => {
-                return interaction.reply(`<:no:811763209237037058> The following error occurred while attempting to toggle the command:\n\`\`\`${e}\`\`\``, { ephemeral: true });
+                return interaction.reply({ content: `<:no:811763209237037058> The following error occurred while attempting to toggle the command:\n\`\`\`${e}\`\`\``, ephemeral: true });
             });
 
         return interaction.reply(`<:check:811763193453477889> The \`${command}\` command has successfully been set to ${bool}.`);

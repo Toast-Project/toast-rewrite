@@ -26,10 +26,10 @@ export default class extends SlashCommand {
 
         const resolvedUser = await client.users.fetch(<Snowflake>user)
             .catch(e => {
-                return interaction.reply("<:no:811763209237037058> An error occurred while trying to fetch the user. Please report this to the Toast development team.", { ephemeral: true });
+                return interaction.reply({ content: "<:no:811763209237037058> An error occurred while trying to fetch the user. Please report this to the Toast development team.", ephemeral: true });
             });
 
-        if (!resolvedUser) return interaction.reply("<:no:811763209237037058> An error occurred while trying to fetch the user. Please report this to the Toast development team.", { ephemeral: true });
+        if (!resolvedUser) return interaction.reply({ content: "<:no:811763209237037058> An error occurred while trying to fetch the user. Please report this to the Toast development team.", ephemeral: true });
 
         const guild = interaction.guild;
         const member = guild.members.cache.get(<Snowflake>user);
@@ -37,7 +37,7 @@ export default class extends SlashCommand {
         let muteRole = interaction.guild.data?.roles?.mute;
 
         muteRole = guild.roles.cache.get(muteRole);
-        if (!muteRole) return interaction.reply("<:no:811763209237037058> This server does not have a mute role set up.", { ephemeral: true });
+        if (!muteRole) return interaction.reply({ content: "<:no:811763209237037058> This server does not have a mute role set up.", ephemeral: true });
 
         const currentMute = await client.db.mutes.findActive(guild.id, member.id);
         if (!currentMute) await client.db.mutes.update(currentMute._id, { active: false });

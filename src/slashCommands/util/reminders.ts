@@ -17,7 +17,7 @@ export default class extends SlashCommand {
     public async run(client: ToastClient, interaction: CommandInteraction) {
         const reminders = await client.db.reminders.find({ user: interaction.member.user.id });
 
-        if (!reminders || !reminders.length) return interaction.reply("You have no upcoming reminders.", { ephemeral: true });
+        if (!reminders || !reminders.length) return interaction.reply({ content: "You have no upcoming reminders.", ephemeral: true });
 
         const remindEmbed = embed({
             title: "Upcoming Reminders"
@@ -31,6 +31,6 @@ export default class extends SlashCommand {
 
         remindEmbed.setDescription(description);
 
-        return interaction.reply(remindEmbed);
+        return interaction.reply({ embeds: [remindEmbed] });
     }
 }

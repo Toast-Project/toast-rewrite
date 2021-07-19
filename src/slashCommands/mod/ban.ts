@@ -34,10 +34,10 @@ export default class extends SlashCommand {
         let [user, reason] = interaction.options.map(v => v.value);
         const resolvedUser = await client.users.fetch(<Snowflake>user)
             .catch(e => {
-                return interaction.reply("<:no:811763209237037058> An error occurred while trying to fetch the user. Please report this to the Toast development team.", { ephemeral: true });
+                return interaction.reply({ content: "<:no:811763209237037058> An error occurred while trying to fetch the user. Please report this to the Toast development team.", ephemeral: true });
             });
 
-        if (!resolvedUser) return interaction.reply("<:no:811763209237037058> An error occurred while trying to fetch the user. Please report this to the Toast development team.", { ephemeral: true });
+        if (!resolvedUser) return interaction.reply({ content: "<:no:811763209237037058> An error occurred while trying to fetch the user. Please report this to the Toast development team.", ephemeral: true });
 
         const guild = interaction.guild;
         const member = guild.members.cache.get(<Snowflake>user);
@@ -47,7 +47,7 @@ export default class extends SlashCommand {
         const targetPermLevel = member ? await userPermissions(client, interaction, member) : 0;
 
         if (targetPermLevel >= authorPermLevel) {
-            return interaction.reply("<:no:811763209237037058> Your permission level must be higher than the specified user in order to ban them.", { ephemeral: true });
+            return interaction.reply({ content: "<:no:811763209237037058> Your permission level must be higher than the specified user in order to ban them.", ephemeral: true });
         }
 
         await notify(interaction.guild, resolvedUser, "ban", Date.now(), null, <string>reason || "No reason provided.")
@@ -55,7 +55,7 @@ export default class extends SlashCommand {
 
         await guild.members.ban(resolvedUser, { reason: reason?.toString() || "No reason provided" })
             .catch(e => {
-                return interaction.reply(`<:no:811763209237037058> The following error occurred while attempting to ban this member:\n\`\`\`${e}\`\`\``, { ephemeral: true });
+                return interaction.reply({ content: `<:no:811763209237037058> The following error occurred while attempting to ban this member:\n\`\`\`${e}\`\`\``, ephemeral: true });
             });
 
         return interaction.reply(`<:check:811763193453477889> \`${resolvedUser.tag}\` has been banned${reason ? ` for \`${reason}\`.` : "."}`);

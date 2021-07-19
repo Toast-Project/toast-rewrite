@@ -33,10 +33,10 @@ export default class extends SlashCommand {
 
         const resolvedUser = await client.users.fetch(<Snowflake>user)
             .catch(e => {
-                return interaction.reply("<:no:811763209237037058> An error occurred while trying to fetch the user. Please report this to the Toast development team.", { ephemeral: true });
+                return interaction.reply({ content: "<:no:811763209237037058> An error occurred while trying to fetch the user. Please report this to the Toast development team.", ephemeral: true });
             });
 
-        if (!resolvedUser) return interaction.reply("<:no:811763209237037058> An error occurred while trying to fetch the user. Please report this to the Toast development team.", { ephemeral: true });
+        if (!resolvedUser) return interaction.reply({ content: "<:no:811763209237037058> An error occurred while trying to fetch the user. Please report this to the Toast development team.", ephemeral: true });
 
         const guild = interaction.guild;
         const member = guild.members.cache.get(<Snowflake>user);
@@ -47,11 +47,11 @@ export default class extends SlashCommand {
         }
 
         const warning = await client.db.warnings.findOne({ guild: guild.id, _id: id });
-        if (!warning) return interaction.reply("The specified warning ID does not exist for the specified member.", { ephemeral: true });
+        if (!warning) return interaction.reply({ content: "The specified warning ID does not exist for the specified member.", ephemeral: true });
 
         await client.db.warnings.delete(id)
             .catch(e => {
-                return interaction.reply(`<:no:811763209237037058> The following error occurred while attempting to remove the warning:\n\`\`\`${e}\`\`\``, { ephemeral: true });
+                return interaction.reply({ content: `<:no:811763209237037058> The following error occurred while attempting to remove the warning:\n\`\`\`${e}\`\`\``, ephemeral: true });
             });
 
         const warnCount = await client.db.warnings.count({ guild: guild.id, user: resolvedUser.id });

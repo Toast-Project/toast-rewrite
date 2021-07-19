@@ -21,13 +21,13 @@ export default class extends SlashCommand {
     }
 
     public async run(client: ToastClient, interaction: CommandInteraction) {
-        if (!interaction.guild.data?.modules?.suggestions) return interaction.reply("<:no:811763209237037058> The suggestions module is currently disabled.", { ephemeral: true });
+        if (!interaction.guild.data?.modules?.suggestions) return interaction.reply({ content: "<:no:811763209237037058> The suggestions module is currently disabled.", ephemeral: true });
 
         const text = <string>interaction.options[0].value;
         const { suggestion } = interaction.guild.data?.channels || {};
         const suggestionChannel = suggestion ? interaction.guild.channels.cache.get(suggestion) : null;
 
-        if (!suggestionChannel || !(suggestionChannel instanceof TextChannel)) return interaction.reply("<:no:811763209237037058> This server does not have a suggestion channel set up yet.", { ephemeral: true });
+        if (!suggestionChannel || !(suggestionChannel instanceof TextChannel)) return interaction.reply({ content: "<:no:811763209237037058> This server does not have a suggestion channel set up yet.", ephemeral: true });
 
         const id = client.randomId();
         const suggestionEmbed = embed({
@@ -38,9 +38,9 @@ export default class extends SlashCommand {
             footer: [`ID: ${id}`]
         });
 
-        const suggestionMessage = await suggestionChannel.send(suggestionEmbed)
+        const suggestionMessage = await suggestionChannel.send({ embeds: [suggestionEmbed] })
             .catch(e => {
-                return interaction.reply(`<:no:811763209237037058> The following error occurred while attempting to send this suggestion:\n\`\`\`${e}\`\`\``, { ephemeral: true });
+                return interaction.reply({ content: `<:no:811763209237037058> The following error occurred while attempting to send this suggestion:\n\`\`\`${e}\`\`\``, ephemeral: true });
             });
         if (!suggestionMessage) return;
 
@@ -61,7 +61,7 @@ export default class extends SlashCommand {
 
         await client.db.suggestions.insert(newSuggestion)
             .catch(e => {
-                return interaction.reply(`<:no:811763209237037058> The following error occurred while attempting to save this suggestion:\n\`\`\`${e}\`\`\``, { ephemeral: true });
+                return interaction.reply({ content: `<:no:811763209237037058> The following error occurred while attempting to save this suggestion:\n\`\`\`${e}\`\`\``, ephemeral: true });
             });
 
         return interaction.reply("<:check:811763193453477889> Your suggestion has been submitted successfully.");

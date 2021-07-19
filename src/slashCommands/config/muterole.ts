@@ -43,15 +43,15 @@ export default class extends SlashCommand {
         switch (subCommand) {
             case "view":
                 const muteRole = interaction.guild.roles.cache.get(interaction.guild.data?.roles?.mute);
-                return interaction.reply(`The muted role for this server${muteRole ? ` is ${muteRole}.` : " is not yet set up."}`, { allowedMentions: { parse: [] } });
+                return interaction.reply({ content: `The muted role for this server${muteRole ? ` is ${muteRole}.` : " is not yet set up."}`, allowedMentions: { parse: [] } });
 
             case "set":
                 await client.db.guilds.setMuteRole(interaction.guild.id, newRole.id)
                     .catch(e => {
-                        return interaction.reply(`<:no:811763209237037058> The following error occurred while attempting to set the muted role:\n\`\`\`${e}\`\`\``, { ephemeral: true });
+                        return interaction.reply({ content: `<:no:811763209237037058> The following error occurred while attempting to set the muted role:\n\`\`\`${e}\`\`\``, ephemeral: true });
                     });
 
-                return interaction.reply(`<:check:811763193453477889> The muted role for the server has successfully been set to ${newRole}.`, { allowedMentions: { parse: [] } });
+                return interaction.reply({ content: `<:check:811763193453477889> The muted role for the server has successfully been set to ${newRole}.`, allowedMentions: { parse: [] } });
         }
     }
 }

@@ -26,19 +26,19 @@ export default class extends SlashCommand {
         const channel = interaction.channel;
 
         if (!channel) {
-            return interaction.reply("<:no:811763209237037058> There was an error fetching the channel. Please report this to the Toast development team.", { ephemeral: true });
+            return interaction.reply({ content: "<:no:811763209237037058> There was an error fetching the channel. Please report this to the Toast development team.", ephemeral: true });
         }
 
         if (amount <= 1 || amount > 99) {
-            return interaction.reply("<:no:811763209237037058> You must delete an amount of messages between 2-99.", { ephemeral: true });
+            return interaction.reply({ content: "<:no:811763209237037058> You must delete an amount of messages between 2-99.", ephemeral: true });
         }
 
         let messagesDeleted = null;
-        if (((channel): channel is TextChannel => channel.type === "text")(channel)) {
+        if (((channel): channel is TextChannel => channel.type === "GUILD_TEXT")(channel)) {
             const { size: deleted } = typeof (amount) === "number" ? await channel.bulkDelete(amount) : null;
             messagesDeleted = deleted;
         }
 
-        return interaction.reply(`<:check:811763193453477889> Cleared \`${messagesDeleted}\` messages.`, { ephemeral: true })
+        return interaction.reply({ content: `<:check:811763193453477889> Cleared \`${messagesDeleted}\` messages.`, ephemeral: true })
     }
 }

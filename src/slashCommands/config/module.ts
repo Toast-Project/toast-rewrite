@@ -48,16 +48,16 @@ export default class extends SlashCommand {
         switch (subCommand) {
             case "view":
                 const { economy = false, leveling = false, suggestions = false } = interaction.guild.data?.modules;
-                if (!modules.includes(<string>module)) return interaction.reply(`<:no:811763209237037058> Available modules are \`suggestions\`, \`economy\`, \`leveling\`.`, { ephemeral: true });
+                if (!modules.includes(<string>module)) return interaction.reply({ content: `<:no:811763209237037058> Available modules are \`suggestions\`, \`economy\`, \`leveling\`.`, ephemeral: true });
 
                 return interaction.reply(`Economy: ${economy}\nLeveling: ${leveling}\nSuggestions: ${suggestions}`);
 
             case "set":
-                if (!modules.includes(<string>module)) return interaction.reply(`<:no:811763209237037058> Available modules are \`suggestions\`, \`economy\`, \`leveling\`.`, { ephemeral: true });
+                if (!modules.includes(<string>module)) return interaction.reply({ content: `<:no:811763209237037058> Available modules are \`suggestions\`, \`economy\`, \`leveling\`.`, ephemeral: true });
 
                 await client.db.guilds.setModule(interaction.guild.id, <string>module, <boolean>bool)
                     .catch(e => {
-                        return interaction.reply(`<:no:811763209237037058> The following error occurred while attempting to toggle the module:\n\`\`\`${e}\`\`\``, { ephemeral: true });
+                        return interaction.reply({ content: `<:no:811763209237037058> The following error occurred while attempting to toggle the module:\n\`\`\`${e}\`\`\``, ephemeral: true });
                     });
 
                 return interaction.reply(`The \`${module}\` module is now set to ${bool}.`);

@@ -33,12 +33,12 @@ export default class extends SlashCommand {
         let [duration, text] = interaction.options.map(v => v.value);
         duration = ms(duration.toString());
 
-        if (!duration) return interaction.reply("<:no:811763209237037058> You must provide a valid duration (eg. 10m or 8h).", { ephemeral: true });
+        if (!duration) return interaction.reply({ content: "<:no:811763209237037058> You must provide a valid duration (eg. 10m or 8h).", ephemeral: true });
 
         await client.db.reminders.insert({
             _id: client.randomId(),
             user: interaction.member.user.id,
-            channel: interaction.channelID,
+            channel: interaction.channelId,
             text,
             duration,
             createdAt: Date.now()

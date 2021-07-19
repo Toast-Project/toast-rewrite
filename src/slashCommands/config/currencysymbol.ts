@@ -43,11 +43,11 @@ export default class extends SlashCommand {
                 return interaction.reply(`The currency symbol for this server is set to ${currencySymbol || "$"}.`);
 
             case "set":
-                if (symbol.length > 30) return interaction.reply(`<:no:811763209237037058> The character limit for currency symbols are 30 characters.`, { ephemeral: true });
+                if (symbol.length > 30) return interaction.reply({ content: `<:no:811763209237037058> The character limit for currency symbols are 30 characters.`, ephemeral: true });
 
                 await client.db.guilds.setCurrencySymbol(interaction.guild.id, symbol)
                     .catch(e => {
-                        return interaction.reply(`<:no:811763209237037058> The following error occurred while attempting to set the currency symbol:\n\`\`\`${e}\`\`\``, { ephemeral: true });
+                        return interaction.reply({ content: `<:no:811763209237037058> The following error occurred while attempting to set the currency symbol:\n\`\`\`${e}\`\`\``, ephemeral: true });
                     });
 
                 return interaction.reply(`<:check:811763193453477889> The currency symbol for the server has successfully been set to ${symbol}.`);

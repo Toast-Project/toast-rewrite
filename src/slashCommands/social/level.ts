@@ -73,6 +73,6 @@ export default class extends SlashCommand {
         const attachment = new MessageAttachment(canvas.toBuffer(), "profile.jpg");
 
         await interaction.defer();
-        return interaction.followUp(attachment);
+        return interaction.followUp({ files: [attachment] });
     }
 }

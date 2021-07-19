@@ -2,13 +2,13 @@ import { ColorResolvable, MessageEmbed } from "discord.js";
 
 interface EmbedConf {
     title?: string,
-    description?: string | string[],
+    description?: string,
     thumbnail?: string,
     color?: ColorResolvable,
-    footer?: Array<any>,
+    footer?: Array<string>,
     timestamp?: boolean,
     author?: Array<any>,
-    fields?: any
+    fields?: Array<any>
 }
 
 type EmbedOptions = EmbedConf;
@@ -20,7 +20,7 @@ export default function embed(data: EmbedOptions) {
     data.description ? embed.setDescription(data.description) : null;
     data.thumbnail ? embed.setThumbnail(data.thumbnail) : null;
     data.color ? embed.setColor(data.color) : embed.setColor("BLUE");
-    data.footer ? embed.setFooter(data.footer) : null;
+    data.footer ? embed.setFooter(data.footer[0], data.footer[1]) : null;
     data.timestamp ? embed.setTimestamp() : null;
     data.author ? embed.setAuthor(data.author[0], data.author[1]) : null;
 

@@ -160,12 +160,10 @@ export default class extends SlashCommand {
 
                 const reply = embed({
                     title: "Shop",
-                    description: [
-                        `<:check:811763193453477889> Created "${name}" (id ${id})`,
-                        "Price: " + symbol + cost,
-                        "Role: " + (role ? role : "none"),
-                        "Limit: " + (limit > 0 ? limit : "none")
-                    ]
+                    description: `<:check:811763193453477889> Created "${name}" (id ${id})` +
+                        "\nPrice: " + symbol + cost +
+                        "\nRole: " + (role ? role : "none") +
+                        "\nLimit: " + (limit > 0 ? limit : "none")
                 });
 
                 return interaction.reply(reply);

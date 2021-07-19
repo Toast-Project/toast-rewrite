@@ -72,16 +72,14 @@ export default class extends SlashCommand {
             title: "Balance",
             color: "GREEN",
             author: [interaction.user.tag, interaction.user.displayAvatarURL()],
-            description: [
-                `${start} **${symbol}${worth}** (**${symbol}${bank}** in the bank).`,
-                `• Time until work: ${workTime}`,
-                `• Time until crime: ${crimeTime}`,
-                `• Time until rob: ${robTime}`,
-                `• Time until daily: ${dailyTime}`,
-            ],
-            fields: {
-                1: ["Items", field || "No items"]
-            }
+            description: `${start} **${symbol}${worth}** (**${symbol}${bank}** in the bank).` +
+                `\n• Time until work: ${workTime}` +
+                `\n• Time until crime: ${crimeTime}` +
+                `\n• Time until rob: ${robTime}` +
+                `\n• Time until daily: ${dailyTime}`,
+            fields: [
+                ["Items", field || "No items"]
+            ]
         });
 
         return interaction.followUp(reply);

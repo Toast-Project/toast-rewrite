@@ -4,14 +4,12 @@ import { lstatSync, readdirSync } from "fs";
 import { join } from "@fireflysemantics/join";
 import { resolve } from "path";
 import Event from "./Event";
-import Command from "./Command";
 import Database from "../database/functions";
 import SlashCommand from "./SlashCommand";
 import checkReminders from "../functions/checkReminders";
 import checkMutes from "../functions/checkMutes";
 import randomString = require("jvar/utility/randomString");
 
-const commandsDirectory = resolve(__dirname, "..", "..", "commands");
 const slashCommandsDirectory = resolve(__dirname, "..", "..", "slashCommands");
 const eventsDirectory = resolve(__dirname, "..", "..", "events");
 
@@ -42,38 +40,11 @@ export default class ToastClient extends Client {
         await super.login(process.env.CLIENT_TOKEN);
         await this._loadDB();
         await this._loadEvents(eventsDirectory);
-        await this._loadCommands(commandsDirectory);
         await this._loadSlashCommands(slashCommandsDirectory);
         await console.log(`[COMMANDS]: ${this.commands.size} command(s) loaded`);
         await console.log(`[SLASHCOMMANDS]: ${this.slashCommands.size} slash-command(s) loaded`);
         await setInterval(checkReminders, 60000, this);
         await setInterval(checkMutes, 30000, this);
-
-        return this;
-    }
-
-    private async _loadCommands(directory) {
-        for (const filename of readdirSync(directory, "utf8")) {
-            if (
-                !filename.endsWith(".js") &&
-                !filename.endsWith(".ts") &&
-                lstatSync(join(directory, filename)).isDirectory()
-            )
-                await this._loadCommands(join(directory, filename));
-            else if (filename.endsWith(".js") || filename.endsWith(".ts")) {
-                const commandClass = require(join(directory, filename))["default"];
-                const command: Command = new commandClass(this);
-
-                const split = join(directory, filename).split(/[\/\\]/g);
-                command.setCategory(split[split.length - 2]);
-
-                if (this.commands.has(command.help.name)) {
-                    throw new Error("Duplicate command name " + command.help.name);
-                }
-
-                this.commands.set(command.help.name, command);
-            }
-        }
 
         return this;
     }

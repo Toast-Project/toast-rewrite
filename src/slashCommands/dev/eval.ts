@@ -29,7 +29,7 @@ export default class extends SlashCommand {
 
         let ev = <string>interaction.options[0].value;
 
-        if (ev === "client.token" || ev === "client.env.token" || ev === "token" || ev === "admin.token") return interaction.reply("Banned eval content", { ephemeral: true });
+        if (ev === "client.token" || ev === "client.env.token" || ev === "token" || ev === "admin.token") return interaction.reply({ content: "Blacklisted eval content", ephemeral: true });
 
         if (/\s-s$/.exec(ev) !== null) {
             ev = ev.replace(/\s-s$/, "");

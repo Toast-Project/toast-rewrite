@@ -1,7 +1,8 @@
 import ToastClient from "./ToastClient";
+import { ClientEvents } from "discord.js";
 
 interface Conf {
-    name: string,
+    name: keyof ClientEvents,
     once?: boolean
 }
 
@@ -19,5 +20,5 @@ export default abstract class Event {
         };
     }
 
-    public abstract run(...args: readonly unknown[]): unknown;
+    public abstract run(...args: readonly unknown[]): any;
 }

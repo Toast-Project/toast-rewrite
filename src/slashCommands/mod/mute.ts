@@ -42,14 +42,14 @@ export default class extends SlashCommand {
         let [user, duration, reason] = interaction.options.map(v => v.value);
         duration = ms(duration.toString());
 
-        if (!duration) return interaction.reply("<:no:811763209237037058> You must provide a valid duration (eg. 10m or 8h).", { ephemeral: true })
+        if (!duration) return interaction.reply({ content: "<:no:811763209237037058> You must provide a valid duration (eg. 10m or 8h).", ephemeral: true })
 
         const resolvedUser = await client.users.fetch(<Snowflake>user)
             .catch(e => {
-                return interaction.reply("<:no:811763209237037058> An error occurred while trying to fetch the user. Please report this to the Toast development team.", { ephemeral: true });
+                return interaction.reply({ content: "<:no:811763209237037058> An error occurred while trying to fetch the user. Please report this to the Toast development team.", ephemeral: true });
             });
 
-        if (!resolvedUser) return interaction.reply("<:no:811763209237037058> An error occurred while trying to fetch the user. Please report this to the Toast development team.", { ephemeral: true });
+        if (!resolvedUser) return interaction.reply({ content: "<:no:811763209237037058> An error occurred while trying to fetch the user. Please report this to the Toast development team.", ephemeral: true });
 
         const guild = interaction.guild;
         const member = guild.members.cache.get(<Snowflake>user);
@@ -59,7 +59,7 @@ export default class extends SlashCommand {
         const targetPermLevel = member ? await userPermissions(client, interaction, member) : 0;
 
         if (targetPermLevel >= authorPermLevel) {
-            return interaction.reply("<:no:811763209237037058> Your permission level must be higher than the specified user in order to mute them.", { ephemeral: true });
+            return interaction.reply({ content: "<:no:811763209237037058> Your permission level must be higher than the specified user in order to mute them.", ephemeral: true });
         }
 
         let muteRole = interaction.guild.data?.roles?.mute;
@@ -73,12 +73,12 @@ export default class extends SlashCommand {
                 });
 
                 for (const channel of guild.channels.cache.values()) {
-                    if (channel.type === "voice") {
-                        await channel.updateOverwrite(role, { SPEAK: false });
-                    } else if (channel.type === "text") {
-                        await channel.updateOverwrite(role, { SEND_MESSAGES: false, ADD_REACTIONS: false });
-                    } else if (channel.type === "category") {
-                        await channel.updateOverwrite(role, {
+                    if (channel.type === "GUILD_VOICE") {
+                        await channel.permissionOverwrites.create(role, { SPEAK: false });
+                    } else if (channel.type === "GUILD_TEXT") {
+                        await channel.permissionOverwrites.create(role, { SEND_MESSAGES: false, ADD_REACTIONS: false });
+                    } else if (channel.type === "GUILD_CATEGORY") {
+                        await channel.permissionOverwrites.create(role, {
                             SEND_MESSAGES: false,
                             ADD_REACTIONS: false,
                             SPEAK: false
@@ -89,7 +89,7 @@ export default class extends SlashCommand {
                 muteRole = role;
                 await client.db.guilds.setMuteRole(guild.id, role.id);
             } catch (err) {
-                return interaction.reply(`<:no:811763209237037058> I am missing permission to create roles or manage channels. Please give me these permissions, or create a Muted role and use the setmuterole command to configure it.`, { ephemeral: true });
+                return interaction.reply({ content: `<:no:811763209237037058> I am missing permission to create roles or manage channels. Please give me these permissions, or create a Muted role and use the setmuterole command to configure it.`, ephemeral: true });
             }
         }
 
@@ -100,7 +100,7 @@ export default class extends SlashCommand {
 
         await member.roles.add(muteRole)
             .catch(e => {
-                return interaction.reply(`<:no:811763209237037058> I am unable to mute the specified member. Make sure my role and the muted role is higher than the specified member.\n\nError: \`${e}\``, { ephemeral: true });
+                return interaction.reply({ content: `<:no:811763209237037058> I am unable to mute the specified member. Make sure my role and the muted role is higher than the specified member.\n\nError: \`${e}\``, ephemeral: true });
             });
 
         const mute = {
@@ -116,7 +116,7 @@ export default class extends SlashCommand {
 
         await client.db.mutes.insert(mute)
             .catch(e => {
-                return interaction.reply(`<:no:811763209237037058> An unexpected error occurred. Please report this to the Toast development team.\n\nError: \`${e}\``, { ephemeral: true })
+                return interaction.reply({ content: `<:no:811763209237037058> An unexpected error occurred. Please report this to the Toast development team.\n\nError: \`${e}\``, ephemeral: true })
             });
 
         await notify(interaction.guild, resolvedUser, "mute", Date.now(), ms(duration, { long: true }), <string>reason || "No reason provided.")

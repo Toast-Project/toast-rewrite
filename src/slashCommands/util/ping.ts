@@ -19,6 +19,6 @@ export default class extends SlashCommand {
             description: `Pong! The Discord API latency is ${client.ws.ping}ms.`
         });
 
-        return interaction.reply(embed);
+        return interaction.reply({ embeds: [embed] });
     }
 }

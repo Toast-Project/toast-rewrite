@@ -44,12 +44,12 @@ export default class extends SlashCommand {
             author: [resolvedUser.tag, resolvedUser.displayAvatarURL()]
         });
 
-        let description = [];
+        let description = "";
 
         if (warnings.length) {
             for (const { _id, mod, reason } of warnings) {
                 const { tag } = await client.users.fetch(mod);
-                description.push(`ID: ${_id}\n> **Action:** warn\n> **Mod:** ${tag}\n> **Reason:** ${reason}\n`);
+                description += `ID: ${_id}\n> **Action:** warn\n> **Mod:** ${tag}\n> **Reason:** ${reason}\n`;
             }
         }
 

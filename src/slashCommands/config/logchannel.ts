@@ -54,7 +54,7 @@ export default class extends SlashCommand {
             case "disable":
                 await client.db.guilds.setLogChannel(interaction.guild.id, null)
                     .catch(e => {
-                        return interaction.reply(`<:no:811763209237037058> The following error occurred while attempting to set the log channel:\n\`\`\`${e}\`\`\``, { ephemeral: true });
+                        return interaction.reply({ content: `<:no:811763209237037058> The following error occurred while attempting to set the log channel:\n\`\`\`${e}\`\`\``, ephemeral: true });
                     });
 
                 return interaction.reply("<:check:811763193453477889> Logging has successfully been disabled for this server.");
@@ -62,7 +62,7 @@ export default class extends SlashCommand {
             case "set":
                 await client.db.guilds.setLogChannel(interaction.guild.id, newChannel.id)
                     .catch(e => {
-                        return interaction.reply(`<:no:811763209237037058> The following error occurred while attempting to set the log channel:\n\`\`\`${e}\`\`\``, { ephemeral: true });
+                        return interaction.reply({ content: `<:no:811763209237037058> The following error occurred while attempting to set the log channel:\n\`\`\`${e}\`\`\``, ephemeral: true });
                     });
 
                 return interaction.reply(`<:check:811763193453477889> The log channel for the server has successfully been set to ${newChannel}.`);

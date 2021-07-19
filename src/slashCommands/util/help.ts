@@ -31,6 +31,6 @@ export default class extends SlashCommand {
         embed.addField("Configuration", getCommands("config"));
         embed.addField("Suggestions", getCommands("suggestions"));
 
-        return interaction.reply(embed);
+        return interaction.reply({ embeds: [embed] });
     }
 }

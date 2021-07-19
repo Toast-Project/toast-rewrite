@@ -35,10 +35,10 @@ export default class extends SlashCommand {
 
         const resolvedUser = await client.users.fetch(<Snowflake>user)
             .catch(e => {
-                return interaction.reply("<:no:811763209237037058> An error occurred while trying to fetch the user. Please report this to the Toast development team.", { ephemeral: true });
+                return interaction.reply({ content: "<:no:811763209237037058> An error occurred while trying to fetch the user. Please report this to the Toast development team.", ephemeral: true });
             });
 
-        if (!resolvedUser) return interaction.reply("<:no:811763209237037058> An error occurred while trying to fetch the user. Please report this to the Toast development team.", { ephemeral: true });
+        if (!resolvedUser) return interaction.reply({ content: "<:no:811763209237037058> An error occurred while trying to fetch the user. Please report this to the Toast development team.", ephemeral: true });
 
         const guild = interaction.guild;
         const member = guild.members.cache.get(<Snowflake>user);
@@ -48,11 +48,11 @@ export default class extends SlashCommand {
         const targetPermLevel = member ? await userPermissions(client, interaction, member) : 0;
 
         if (targetPermLevel >= authorPermLevel) {
-            return interaction.reply("<:no:811763209237037058> Your permission level must be higher than the specified user in order to warn them.", { ephemeral: true });
+            return interaction.reply({ content: "<:no:811763209237037058> Your permission level must be higher than the specified user in order to warn them.", ephemeral: true });
         }
 
         const warnCount = await client.db.warnings.getCount(guild.id, resolvedUser.id);
-        if (warnCount >= 20) return interaction.reply("<:no:811763209237037058> The specified user is currently at the maximum amount of warnings (20).", { ephemeral: true });
+        if (warnCount >= 20) return interaction.reply({ content: "<:no:811763209237037058> The specified user is currently at the maximum amount of warnings (20).", ephemeral: true });
 
         const warning = {
             _id: client.randomId(),
@@ -66,7 +66,7 @@ export default class extends SlashCommand {
 
         await client.db.warnings.insert(warning)
             .catch(e => {
-                return interaction.reply(`<:no:811763209237037058> The following error occurred while attempting to warn this member:\n\`\`\`${e}\`\`\``, { ephemeral: true });
+                return interaction.reply({ content: `<:no:811763209237037058> The following error occurred while attempting to warn this member:\n\`\`\`${e}\`\`\``, ephemeral: true });
             });
 
         await notify(interaction.guild, resolvedUser, "warn", Date.now(), null, <string>reason || "No reason provided.")
