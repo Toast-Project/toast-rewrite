@@ -12,7 +12,7 @@ export default class extends Command {
             options: [
                 {
                     "type": 1,
-                    "name": "viewchannel",
+                    "name": "view",
                     "description": "View the current suggestion channel",
                     "options": []
                 },
@@ -24,7 +24,7 @@ export default class extends Command {
                 },
                 {
                     "type": 1,
-                    "name": "setchannel",
+                    "name": "set",
                     "description": "Set the suggestion channel",
                     "options": [
                         {
@@ -44,11 +44,11 @@ export default class extends Command {
         const channel = interaction.options.getChannel("channel");
 
         switch (subCommand) {
-            case "viewchannel":
+            case "view":
                 const suggestionChannel = interaction.guild.channels.cache.get(interaction.guild.data?.channels?.log);
                 return interaction.reply(`The suggestion channel for this server${suggestionChannel ? ` is ${suggestionChannel}.` : " is not yet set up."}`);
 
-            case "setchannel":
+            case "set":
                 await client.db.guilds.setSuggestionChannel(interaction.guild.id, channel.id)
                     .catch(e => {
                         return interaction.reply({
