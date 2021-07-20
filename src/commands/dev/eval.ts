@@ -29,7 +29,7 @@ export default class extends Command {
 
         let ev = interaction.options.getString("code");
 
-        if (ev === "client.token" || ev === "client.env.token" || ev === "token" || ev === "admin.token") return interaction.reply({
+        if (ev.includes("token")) return interaction.reply({
             content: "Blacklisted eval content",
             ephemeral: true
         });
