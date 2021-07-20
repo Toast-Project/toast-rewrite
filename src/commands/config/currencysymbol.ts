@@ -39,7 +39,7 @@ export default class extends Command {
 
         switch (subCommand) {
             case "view":
-                const currencySymbol = interaction.guild.channels.cache.get(interaction.guild.data?.economy?.symbol);
+                const currencySymbol = interaction.guild.data?.economy?.symbol;
                 return interaction.reply(`The currency symbol for this server is set to ${currencySymbol || "$"}.`);
 
             case "set":
