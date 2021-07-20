@@ -61,6 +61,11 @@ export default class extends Command {
             }
         }
 
+        if (description.length > 4000) {
+            description = description.substring(0, 4000);
+            description += "\n*Embed character limit reached*";
+        }
+
         warningsEmbed.setDescription(description);
 
         return interaction.reply({ embeds: [warningsEmbed] });

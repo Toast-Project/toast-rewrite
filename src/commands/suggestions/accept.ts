@@ -53,7 +53,13 @@ export default class extends Command {
         });
 
         suggest = suggest[0];
-        await client.db.suggestions.accept(interaction.guild.id, suggest["_id"], reason || null);
+        await client.db.suggestions.accept(interaction.guild.id, suggest["_id"], reason || null)
+            .catch(e => {
+                return interaction.reply({
+                    content: "<:no:811763209237037058> The suggestion message could not be accepted. Please report this to the Toast development team.",
+                    ephemeral: true
+                });
+            });
 
         const suggestionMessage = await suggestionChannel.messages.fetch(suggest["messageId"])
             .catch(e => {
@@ -74,7 +80,7 @@ export default class extends Command {
             author: [user.tag, user.displayAvatarURL()],
             description: suggest.text,
             fields: [
-                [`Reason from ${interaction.user.tag}`, reason ? reason : "No reason Provided."]
+                [`Reason from ${interaction.user.tag}`, reason || "No reason Provided."]
             ],
             footer: [`ID: ${suggest._id}`]
         });

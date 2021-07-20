@@ -47,7 +47,7 @@ export default class extends Command {
         if (member && member.roles.cache.has(muteRole.id)) await member.roles.remove(muteRole);
 
         const currentMute = await client.db.mutes.findActive(guild.id, member.id);
-        if (!currentMute) await client.db.mutes.update(currentMute._id, { active: false });
+        if (currentMute) await client.db.mutes.update(currentMute._id, { active: false });
         else return interaction.reply("<:no:811763209237037058> The specified member is not muted.");
 
         return interaction.reply(`<:check:811763193453477889> \`${member.user.tag}\` has been unmuted.`);

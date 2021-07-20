@@ -32,9 +32,9 @@ export default class extends Command {
             });
         }
 
-        if (amount <= 1 || amount > 99) {
+        if (amount < 1 || amount > 99) {
             return interaction.reply({
-                content: "<:no:811763209237037058> You must delete an amount of messages between 2-99.",
+                content: "<:no:811763209237037058> You must delete an amount of messages between 1-99.",
                 ephemeral: true
             });
         }
