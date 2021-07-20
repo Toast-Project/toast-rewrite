@@ -39,7 +39,7 @@ export default class extends Command {
                     `• **Shards:** ${client.shard.count}`
                 ],
                 ["Stats", `• **Guilds:** ${totalGuilds}\n• **Users:** ${totalMembers}`],
-                ["Links", "[Toast Invite](https://discord.com/api/oauth2/authorize?client_id=811387435018879026&permissions=8&redirect_uri=http%3A%2F%2Flocalhost%2Fauth%2Fdiscord%2Fcallback&scope=bot%20applications.commands), [Support Server](discord.gg/5KXfHq948f)"]
+                ["Links", "[Toast Invite](https://discord.com/api/oauth2/authorize?client_id=811387435018879026&permissions=8&redirect_uri=http%3A%2F%2Flocalhost%2Fauth%2Fdiscord%2Fcallback&scope=bot%20applications.commands), [Support Server](https://discord.gg/5KXfHq948f)"]
             ]
         });
 
