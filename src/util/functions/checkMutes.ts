@@ -10,6 +10,8 @@ export default async function (client: ToastClient) {
         if (((createdAt + duration) <= Date.now()) && active) {
             const guildData = await client.db.guilds.get(guild);
             const g: Guild = client.guilds.cache.get(guild);
+            if (!g) continue;
+
             const role = guildData?.roles?.mute;
 
             const r: Role = g.roles.cache.get(role);
