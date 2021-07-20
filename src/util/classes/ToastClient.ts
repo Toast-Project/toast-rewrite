@@ -5,12 +5,12 @@ import { join } from "@fireflysemantics/join";
 import { resolve } from "path";
 import Event from "./Event";
 import Database from "../database/functions";
-import SlashCommand from "./SlashCommand";
+import Command from "./Command";
 import checkReminders from "../functions/checkReminders";
 import checkMutes from "../functions/checkMutes";
 import randomString = require("jvar/utility/randomString");
 
-const slashCommandsDirectory = resolve(__dirname, "..", "..", "slashCommands");
+const slashCommandsDirectory = resolve(__dirname, "..", "..", "commands");
 const eventsDirectory = resolve(__dirname, "..", "..", "events");
 
 //const interactionCache = new Set();
@@ -20,7 +20,6 @@ export default class ToastClient extends Client {
         super(options || {});
 
         this.commands = new Collection();
-        this.slashCommands = new Collection();
         this.config = config;
 
         this.clean = text => {
@@ -40,9 +39,8 @@ export default class ToastClient extends Client {
         await super.login(process.env.CLIENT_TOKEN);
         await this._loadDB();
         await this._loadEvents(eventsDirectory);
-        await this._loadSlashCommands(slashCommandsDirectory);
-        await console.log(`[COMMANDS]: ${this.commands.size} command(s) loaded`);
-        await console.log(`[SLASHCOMMANDS]: ${this.slashCommands.size} slash-command(s) loaded`);
+        await this._loadCommands(slashCommandsDirectory);
+        await console.log(`[COMMANDS]: ${this.commands.size} slash-command(s) loaded`);
         await setInterval(checkReminders, 60000, this);
         await setInterval(checkMutes, 30000, this);
 
@@ -70,23 +68,23 @@ export default class ToastClient extends Client {
         return this;
     }
 
-    private async _loadSlashCommands(directory) {
+    private async _loadCommands(directory) {
         for (const filename of readdirSync(directory, "utf8")) {
             if (
                 !filename.endsWith(".js") &&
                 !filename.endsWith(".ts") &&
                 lstatSync(join(directory, filename)).isDirectory()
             )
-                await this._loadSlashCommands(join(directory, filename));
+                await this._loadCommands(join(directory, filename));
             else if (filename.endsWith(".js") || filename.endsWith(".ts")) {
                 const commandClass = require(join(directory, filename))["default"];
-                const command: SlashCommand = new commandClass(this);
+                const command: Command = new commandClass(this);
                 command.conf.path = join(directory, filename);
 
                 const split = join(directory, filename).split(/[\/\\]/g);
                 command.help.category = split[split.length - 2];
 
-                this.slashCommands.set(command.help.name, command);
+                this.commands.set(command.help.name, command);
                 await this.application.commands.create(command);
             }
         }

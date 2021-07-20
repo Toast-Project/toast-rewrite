@@ -1,5 +1,6 @@
 import { Message } from "discord.js";
 import ToastClient from "../classes/ToastClient";
+
 const recents = new Map();
 
 export async function addXP(client: ToastClient, message: Message) {

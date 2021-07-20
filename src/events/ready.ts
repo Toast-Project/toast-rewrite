@@ -20,7 +20,7 @@ export default class extends Event {
         });
 
         if (logChannel) {
-            if (((logChannel): logChannel is TextChannel => logChannel.type === "text")(logChannel)) await logChannel.send(embed);
+            if (((logChannel): logChannel is TextChannel => logChannel.type === "text")(logChannel)) await logChannel.send({ embeds: [embed] });
         }
 
         console.log(`Logged in as ${this.client.user.tag} (${this.client.user.id})`);

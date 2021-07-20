@@ -8,7 +8,7 @@ export default async function log(client: ToastClient, guild: Guild, data: any) 
     if (!channel) return;
 
     const log = buildEmbed(data.type, data);
-    await channel.send(log)
+    await channel.send({ embeds: [log] })
         .catch(() => null);
 }
 
@@ -70,7 +70,7 @@ export async function notify(guild: Guild, user: User, type: "mute" | "warn" | "
                 timestamp: true
             });
 
-            return user.send(response)
+            return user.send({ embeds: [response] })
                 .catch((e) => null);
 
         case "warn":
@@ -88,7 +88,7 @@ export async function notify(guild: Guild, user: User, type: "mute" | "warn" | "
                 timestamp: true
             });
 
-            return user.send(response)
+            return user.send({ embeds: [response] })
                 .catch((e) => null);
 
         case "kick":
@@ -106,7 +106,7 @@ export async function notify(guild: Guild, user: User, type: "mute" | "warn" | "
                 timestamp: true
             });
 
-            return user.send(response)
+            return user.send({ embeds: [response] })
                 .catch((e) => null);
 
         case "ban":
@@ -124,7 +124,7 @@ export async function notify(guild: Guild, user: User, type: "mute" | "warn" | "
                 timestamp: true
             });
 
-            return user.send(response)
+            return user.send({ embeds: [response] })
                 .catch((e) => null);
     }
 }

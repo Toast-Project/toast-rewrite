@@ -9,8 +9,6 @@ export default class extends Event {
     }
 
     public async run(message: Message) {
-        if (message.command && !message.command?.conf.saveResponse && message.response) await message.response.delete();
-
         await log(this.client, message.guild, {
             type: "messageDelete",
             user: message.author,

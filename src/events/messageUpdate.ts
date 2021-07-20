@@ -9,6 +9,8 @@ export default class extends Event {
     }
 
     public async run(oldMessage: Message, newMessage: Message) {
+        if (oldMessage.content === newMessage.content) return;
+
         await log(this.client, oldMessage.guild, {
             type: "messageUpdate",
             user: oldMessage.author,
