@@ -32,8 +32,12 @@ export default class extends Command {
             description += `• (${ms((duration + createdAt) - Date.now(), { long: true })}) - \`${text}\`\n`;
         }
 
-        remindEmbed.setDescription(description);
+        if (description.length > 4000) {
+            description = description.substring(0, 4000);
+            description += "\n*Embed character limit reached*";
+        }
 
+        remindEmbed.setDescription(description);
         return interaction.reply({ embeds: [remindEmbed] });
     }
 }

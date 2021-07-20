@@ -39,7 +39,10 @@ export default class extends Command {
 
         const guild = interaction.guild;
         const member = guild.members.cache.get(user.id);
-        if (!member) return interaction.reply("<:no:811763209237037058> The specified user is not a member of this server.");
+        if (!member) return interaction.reply({
+            content: "<:no:811763209237037058> The specified user is not a member of this server.",
+            ephemeral: true
+        });
 
         if (!id) {
             const deleted = await client.db.warnings.clear(guild.id, member.user.id);
