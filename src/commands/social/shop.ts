@@ -108,7 +108,7 @@ export default class extends Command {
 
                     const reply = embed({
                         title: "Item: " + item.name,
-                        description: `${item.description}\n**Price: ${symbol}${item.cost}**\n**Role: ${item.role || "None"}**\n${item.limit > 0 ? `${item.uses}/${item.limit} owned` : `${item.uses}/∞ owned`}`,
+                        description: `${item.description}\n**Price: ${symbol}${item.cost}**\n**Role: ${item.role ? `<@&${item.role}>` : "None"}**\n${item.limit > 0 ? `${item.uses}/${item.limit} owned` : `${item.uses}/∞ owned`}`,
                         footer: ["Shop"]
                     });
 
@@ -132,8 +132,8 @@ export default class extends Command {
                             `${limit > 0 ? `${uses}/${limit} owned` : `${uses}/∞ owned`}`
                         ];
                     }).flatMap(e => e.concat(""));
-
-                    const reply = embed({
+                    console.log(description);
+                    const reply = await embed({
                         title: "Shop",
                         description
                     });
