@@ -167,7 +167,7 @@ export default class extends Command {
                     description,
                     cost,
                     limit,
-                    role: role.id,
+                    role: role?.id || null,
                     uses: 0
                 });
 
