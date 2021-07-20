@@ -20,7 +20,8 @@ export default async function (client: ToastClient) {
             const m: GuildMember = await g.members.fetch(user);
             if (!m) continue;
 
-            await m.roles.remove(r);
+            await m.roles.remove(r)
+                .catch(() => null);
         }
     }
 }
