@@ -123,16 +123,14 @@ export default class extends Command {
                     const description = items.map(({ _id, name, description, cost, limit, role, uses = 0 }) => {
                         const r = interaction.guild.roles.cache.get(role);
 
-                        return [
-                            `(${_id})`,
-                            "**Name: **" + name,
-                            "**Description: **" + description,
-                            "**Price: **" + symbol + cost,
-                            "**Role: **" + `${r ? `<@&${r.id}>` : "None"}`,
-                            `${limit > 0 ? `${uses}/${limit} owned` : `${uses}/∞ owned`}`
-                        ];
-                    }).flatMap(e => e.concat(""));
-                    console.log(description);
+                        return `(${_id})` +
+                            "\n**Name: **" + name +
+                            "\n**Description: **" + description +
+                            "\n**Price: **" + symbol + cost +
+                            "\n**Role: **" + `${r ? `<@&${r.id}>` : "None"}` +
+                            `\n${limit > 0 ? `${uses}/${limit} owned` : `${uses}/∞ owned`}`;
+                    });
+
                     const reply = await embed({
                         title: "Shop",
                         description
