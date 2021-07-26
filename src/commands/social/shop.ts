@@ -99,12 +99,14 @@ export default class extends Command {
                 if (guildShop.length < 1) return interaction.reply("The shop is empty.");
 
                 if (itemName) {
-                    let item = await client.db.guildShop.find({
+                    let result = await client.db.guildShop.find({
                         name: { "$regex": itemName, $options: "i" },
                         guild: interaction.guild.id
                     });
-                    if (item.length > 0) item = item[0];
-                    if (item.length < 1) break;
+                    if (result.length == 0) {
+                        return interaction.reply("That item doesn't exist.");
+                    }
+                    const item = result[0];
 
                     const reply = embed({
                         title: "Item: " + item.name,
@@ -119,6 +121,9 @@ export default class extends Command {
                         .sort({ sort: -1 })
                         .limit(15)
                         .toArray();
+                    if (items.length == 0) {
+                        return interaction.reply("The shop is empty");
+                    }
 
                     const description = items.map(({ _id, name, description, cost, limit, role, uses = 0 }) => {
                         const r = interaction.guild.roles.cache.get(role);
@@ -133,7 +138,7 @@ export default class extends Command {
 
                     const reply = await embed({
                         title: "Shop",
-                        description
+                        description: description.join('\n');
                     });
 
                     return interaction.reply({ embeds: [reply] });
